@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UniNest – Add Property</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .add-page {
+      padding: 40px 0;
+    }
+
+    .add-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .add-card h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .add-card p {
+      color: var(--text-light);
+      margin-bottom: 32px;
+      font-size: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .form-group textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .amenities-check {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .amenity-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .form-submit:hover {
+      background: var(--primary-dark);
+    }
+
+    .success-msg {
+      display: none;
+      background: #d4edda;
+      color: #155724;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .error-msg {
+      display: none;
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .not-logged {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 2px solid var(--border);
+      margin: 24px 0;
+    }
+
+    .section-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo"><i class="fa-solid fa-house" style="color:var(--primary)"></i> UniNest</div>
+    <ul>
+      <li><a href="index.html" data-i18n="navHome">Home</a></li>
+      <li><a href="listings.html" data-i18n="navListings">Listings</a></li>
+      <li><a href="login.html" class="btn-login" id="navLoginBtn" data-i18n="navLogin">Login</a></li>
+      <li><a href="#" onclick="toggleDarkMode()" id="darkModeBtn"><i class="fa-solid fa-moon"></i></a></li>
+      <li><a href="#" onclick="switchLang()" data-i18n="langToggle">عربي <i class="fa-solid fa-globe"></i></a></li>
+    </ul>
+  </nav>
+
+  <div class="add-page">
+    <div class="container" id="pageContent">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p data-i18n="footerRight">© 2026 UniNest. Developed with ❤️ by EELU Students.</p>
+  </footer>
+
+  <script>
+    // الدالة دي بتتنفذ أول ما الصفحة تفتح (عشان نتأكد إن اللي داخل له صلاحية)
+    window.onload = function() {
+      // بنجيب بيانات المستخدم اللي عامل تسجيل دخول من المتصفح (LocalStorage)
+      var user = JSON.parse(localStorage.getItem("currentUser") || "null");
+      var content = document.getElementById("pageContent");
+
+      // تحديث البار العلوي (Navbar): لو مسجل دخول، هنشيل كلمة Login ونحط اسمه
+      if (user) {
+        var btn = document.getElementById("navLoginBtn");
+        btn.textContent = user.name;
+        btn.href = "profile.html";
+      }
+
+      // فحص الأمان الأول: لو مش مسجل دخول أصلاً، بنخفي الفورمة ونظهرله رسالة خطأ عشان يسجل
+      if (!user) {
+        content.innerHTML =
+          "<div class='not-logged'>" +
+            "<div style='font-size:60px;margin-bottom:16px;'>🔒</div>" +
+            "<h2>" + window.t('notLogHead') + "</h2>" +
+            "<p style='color:var(--text-light);margin-bottom:24px;'>" + window.t('notLogSub') + "</p>" +
+            "<a href='login.html' class='btn btn-primary'>" + window.t('btnLoginNow') + "</a>" +
+          "</div>";
+        return;
+      }
+
+      // فحص الأمان التاني: لو مسجل بس نوع حسابه "طالب" هنمنعه يضيف عقار (لإن ده صلاحية المالك بس)
+      if (user.role !== "owner") {
+        content.innerHTML =
+          "<div class='not-logged'>" +
+            "<div style='font-size:60px;margin-bottom:16px;'>🚫</div>" +
+            "<h2>Access Denied</h2>" +
+            "<p style='color:var(--text-light);margin-bottom:24px;'>Only property owners can add new properties.</p>" +
+            "<a href='profile.html' class='btn btn-primary'>Back to Profile</a>" +
+          "</div>";
+        return;
+      }
+
+      content.innerHTML =
+        "<div class='add-card'>" +
+          "<h2>" + window.t('addPropHead') + "</h2>" +
+          "<p>" + window.t('addPropSub') + "</p>" +
+          "<div class='section-label'>" + window.t('basicInfo') + "</div>" +
+          "<div class='form-group'>" +
+            "<label>" + window.t('propTitle') + "</label>" +
+            "<input type='text' id='propTitle' placeholder='...'/>" +
+          "</div>" +
+          "<div class='form-row'>" +
+            "<div class='form-group'>" +
+              "<label>" + window.t('propPrice') + "</label>" +
+              "<input type='number' id='propPrice' placeholder='...'/>" +
+            "</div>" +
+            "<div class='form-group'>" +
+              "<label>" + window.t('propRooms') + "</label>" +
+              "<input type='number' id='propRooms' placeholder='...'/>" +
+            "</div>" +
+          "</div>" +
+
+          "<div class='form-row'>" +
+            "<div class='form-group'>" +
+              "<label>" + window.t('propLocation') + "</label>" +
+              "<select id='propLocation'>" +
+                "<option value=''>Select Location</option>" +
+                "<option value='Fayoum'>Fayoum</option>" +
+                "<option value='Cairo'>Cairo</option>" +
+                "<option value='Giza'>Giza</option>" +
+                "<option value='Alexandria'>Alexandria</option>" +
+                "<option value='Mansoura'>Mansoura</option>" +
+                "<option value='Zagazig'>Zagazig</option>" +
+              "</select>" +
+            "</div>" +
+            "<div class='form-group'>" +
+              "<label>" + window.t('propType') + "</label>" +
+              "<select id='propType'>" +
+                "<option value='apartment'>" + window.t('optApt') + "</option>" +
+                "<option value='single'>" + window.t('optSingle') + "</option>" +
+                "<option value='shared'>" + window.t('optShared') + "</option>" +
+              "</select>" +
+            "</div>" +
+          "</div>" +
+
+          "<div class='form-group'>" +
+            "<label>" + window.t('propDesc') + "</label>" +
+            "<textarea id='propDesc' placeholder='...'></textarea>" +
+          "</div>" +
+
+          "<div class='form-group'>" +
+            "<label>" + window.t('propPhone') + "</label>" +
+            "<input type='text' id='propPhone' placeholder='e.g. 01012345678'/>" +
+          "</div>" +
+
+          "<hr class='section-divider'/>" +
+          "<div class='section-label'>" + window.t('propAmenities') + "</div>" +
+          "<div class='form-group'>" +
+            "<div class='amenities-check'>" +
+              "<label class='amenity-item'><input type='checkbox' value='Wi-Fi'/> Wi-Fi</label>" +
+              "<label class='amenity-item'><input type='checkbox' value='Air Conditioning'/> Air Conditioning</label>" +
+              "<label class='amenity-item'><input type='checkbox' value='Kitchen'/> Kitchen</label>" +
+              "<label class='amenity-item'><input type='checkbox' value='Washing Machine'/> Washing Machine</label>" +
+              "<label class='amenity-item'><input type='checkbox' value='Parking'/> Parking</label>" +
+              "<label class='amenity-item'><input type='checkbox' value='Elevator'/> Elevator</label>" +
+            "</div>" +
+          "</div>" +
+
+          "<button class='form-submit' onclick='submitProperty()'>" + window.t('btnSubmitProp') + "</button>" +
+          "<div class='error-msg' id='propError'>" + window.t('errProp') + "</div>" +
+          "<div class='success-msg' id='propSuccess'>" + window.t('succProp') + "</div>" +
+        "</div>";
+    };
+
+    // الدالة المسئولة عن حفظ بيانات العقار الجديد لما المالك يدوس "إضافة"
+    function submitProperty() {
+      // بنجمع الداتا اللي اتكتبت في الـ Inputs وبنعملها trim عشان نمسح المسافات الفاضية بالغلط
+      var title = document.getElementById("propTitle").value.trim();
+      var price = document.getElementById("propPrice").value.trim();
+      var rooms = document.getElementById("propRooms").value.trim();
+      var location = document.getElementById("propLocation").value;
+      var type = document.getElementById("propType").value;
+      var desc = document.getElementById("propDesc").value.trim();
+      var phone = document.getElementById("propPhone").value.trim();
+
+      // بنجهز رسائل النجاح والخطأ ونخفيها كبداية
+      var errorMsg = document.getElementById("propError");
+      var successMsg = document.getElementById("propSuccess");
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
+
+      // التحقق من صحة البيانات (Validation): لو فيه أي حقل فاضي، بنقف ونطلع إيرور
+      if (!title || !price || !rooms || !location || !desc || !phone) {
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      // تجميع المميزات الـ Amenities (زي الواي فاي والتكييف) اللي اتعلم عليها بعلامة صح
+      var amenities = [];
+      var checkboxes = document.querySelectorAll(".amenities-check input:checked");
+      for (var i = 0; i < checkboxes.length; i++) {
+        amenities.push(checkboxes[i].value);
+      }
+
+      // بنجيب بيانات المالك نفسه عشان نربط العقار باسمه
+      var user = JSON.parse(localStorage.getItem("currentUser"));
+      // بنجيب العقارات الحالية المضافة قبل كده، لو لسه مفيش بنعتبرها مصفوفة حرة []
+      var myListings = JSON.parse(localStorage.getItem("myListings") || "[]");
+
+      // بنبني أوبجكت (Object) جديد للعقار وبنديله ID مميز عن طريق تاريخ الثواني الحالية Date.now()
+      var newProperty = {
+        id: Date.now(),
+        title: title,
+        price: parseInt(price),
+        rooms: parseInt(rooms),
+        location: location,
+        type: type,
+        description: desc,
+        phone: phone,
+        amenities: amenities,
+        owner: user.name,
+        image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400"
+      };
+
+      // بنضيف العقار الجديد للمصفوفة ونحفظها تاني في المتصفح (LocalStorage)
+      myListings.push(newProperty);
+      localStorage.setItem("myListings", JSON.stringify(myListings));
+
+      // نظهر إشعار النجاح، وبعد ثانيتين بننقله تلقائي لصفحة البروفايل الخاص بيه
+      successMsg.style.display = "block";
+      setTimeout(function() {
+        window.location.href = "profile.html";
+      }, 2000);
+    }
+  </script>
+
+  <script src="js/data.js"></script>
+  <script src="js/lang.js"></script>
+  <!-- Floating Contact Bar -->
+  <div class="floating-bar">
+    <a href="https://wa.me/1234567890" target="_blank" class="float-btn btn-whatsapp" title="Smart Assistant">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="tel:01012345678" class="float-btn btn-phone" title="Call Us">
+      <i class="fas fa-phone"></i>
+    </a>
+    <a href="mailto:info@uninest.com" class="float-btn btn-email" title="Email Us">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</body>
+</html>
