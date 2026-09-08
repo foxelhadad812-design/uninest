@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UniNest – Listings</title>
+  <script>
+    if (!localStorage.getItem("currentUser") || localStorage.getItem("currentUser") === "null") {
+      window.location.replace("login.html?reason=auth_required");
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .listings-page { padding: 40px 0; }
+
+    .listings-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .filters-panel {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 80px;
+    }
+
+    .filters-panel h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .filter-group {
+      margin-bottom: 20px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .filter-group input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    .price-display {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .filter-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .checkbox-group label {
+      font-weight: 400 !important;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .search-top {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .search-top input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .results-count {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--text-light);
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo"><i class="fa-solid fa-house" style="color:var(--primary)"></i> UniNest</div>
+    <ul>
+      <li><a href="index.html" data-i18n="navHome">Home</a></li>
+      <li><a href="listings.html" class="active" data-i18n="navListings">Listings</a></li>
+      <li><a href="login.html" class="btn-login" id="navLoginBtn" data-i18n="navLogin">Login</a></li>
+      <li><a href="#" onclick="toggleDarkMode()" id="darkModeBtn"><i class="fa-solid fa-moon"></i></a></li>
+      <li><a href="#" onclick="switchLang()" data-i18n="langToggle">عربي <i class="fa-solid fa-globe"></i></a></li>
+    </ul>
+  </nav>
+
+  <div class="listings-page">
+    <div class="container">
+      <div class="listings-layout">
+
+        <!-- Filters -->
+        <aside class="filters-panel">
+          <h3 data-i18n="filtersLbl">🔍 Filters</h3>
+
+          <div class="filter-group">
+            <label data-i18n="maxPrice">Max Price (EGP/month)</label>
+            <input type="range" id="priceRange" min="500" max="20000"
+              value="20000" step="500" oninput="updatePrice(this.value)"/>
+            <div class="price-display" id="priceDisplay">Up to 20000 EGP</div>
+          </div>
+
+          <div class="filter-group">
+            <label data-i18n="propLocation">Location</label>
+            <select id="locationFilter" onchange="applyFilters()">
+              <option value="" data-i18n="optAllLoc">All Locations</option>
+              <option value="Fayoum">Fayoum</option>
+              <option value="Cairo">Cairo</option>
+              <option value="Alexandria">Alexandria</option>
+              <option value="Mansoura">Mansoura</option>
+              <option value="Zagazig">Zagazig</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label data-i18n="roomTypeLbl">Room Type</label>
+            <div class="checkbox-group">
+              <label>
+                <input type="checkbox" value="apartment" onchange="applyFilters()"/>
+                <span data-i18n="optApt">Entire Apartment</span>
+              </label>
+              <label>
+                <input type="checkbox" value="single" onchange="applyFilters()"/>
+                <span data-i18n="optSingle">Single Room</span>
+              </label>
+              <label>
+                <input type="checkbox" value="shared" onchange="applyFilters()"/>
+                <span data-i18n="optShared">Shared Room</span>
+              </label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary"
+            style="width:100%" onclick="resetFilters()" data-i18n="resetFilters">
+            Reset Filters
+          </button>
+        </aside>
+
+        <!-- Listings Grid -->
+        <div>
+          <div class="search-top">
+            <input type="text" id="searchInput"
+              data-i18n="plcSearch"
+              placeholder="Search by title or location..."
+              oninput="applyFilters()"/>
+          </div>
+          <div class="results-count" id="resultsCount"></div>
+          <div class="cards-grid" id="listingsGrid"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p data-i18n="footerRight">© 2026 UniNest. Developed with ❤️ by EELU Students.</p>
+  </footer>
+
+  <script src="js/lang.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/listings.js"></script>
+
+  <!-- Floating Contact Bar -->
+  <div class="floating-bar">
+    <a href="https://wa.me/1234567890" target="_blank" class="float-btn btn-whatsapp" title="Smart Assistant">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="tel:01012345678" class="float-btn btn-phone" title="Call Us">
+      <i class="fas fa-phone"></i>
+    </a>
+    <a href="mailto:info@uninest.com" class="float-btn btn-email" title="Email Us">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</body>
+</html>

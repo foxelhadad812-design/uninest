@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UniNest – Profile</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .profile-page { padding: 40px 0; }
+
+    .profile-header {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .profile-info h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .profile-info p {
+      color: var(--text-light);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .profile-role {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .profile-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-logout {
+      background: #e74c3c;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .profile-section {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-section h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .mini-card {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mini-card:last-child { border-bottom: none; }
+
+    .mini-card img {
+      width: 70px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .mini-card-info { flex: 1; }
+
+    .mini-card-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .mini-card-price {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .mini-card-btn {
+      padding: 6px 12px;
+      background: var(--primary);
+      color: white;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: var(--text-light);
+      padding: 20px 0;
+      font-size: 14px;
+    }
+
+    .not-logged {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .not-logged h2 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo"><i class="fa-solid fa-house" style="color:var(--primary)"></i> UniNest</div>
+    <ul>
+      <li><a href="index.html" data-i18n="navHome">Home</a></li>
+      <li><a href="listings.html" data-i18n="navListings">Listings</a></li>
+      <li><a href="login.html" class="btn-login" id="navLoginBtn" data-i18n="navLogin">Login</a></li>
+      <li><a href="#" onclick="toggleDarkMode()" id="darkModeBtn"><i class="fa-solid fa-moon"></i></a></li>
+      <li><a href="#" onclick="switchLang()" data-i18n="langToggle">عربي <i class="fa-solid fa-globe"></i></a></li>
+    </ul>
+  </nav>
+
+  <div class="profile-page">
+    <div class="container" id="profileContent">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p data-i18n="footerRight">© 2026 UniNest. Developed with ❤️ by EELU Students.</p>
+  </footer>
+
+  <script src="js/lang.js"></script>
+  <script src="js/data.js"></script>
+  <script>
+    // الدالة دي بتشتغل بمجرد فتح صفحة البروفايل عشان تعرض بيانات المستخدم وعقاراته
+    window.onload = function() {
+      // بنسحب بيانات المستخدم اللي عامل Login حالياً من التخزين المحلي (LocalStorage)
+      var user = JSON.parse(localStorage.getItem("currentUser") || "null");
+      var content = document.getElementById("profileContent");
+
+      // لو مش مسجل دخول، بنمنعه يتصفح البروفايل ونطلب منه يعمل Login
+      if (!user) {
+        content.innerHTML =
+          "<div class='not-logged'>" +
+            "<div style='font-size:60px;margin-bottom:16px;'><i class='fa-solid fa-lock'></i></div>" +
+            "<h2>You are not logged in</h2>" +
+            "<p style='color:var(--text-light);margin-bottom:24px;'>Please login to view your profile</p>" +
+            "<a href='login.html' class='btn btn-primary'>Login Now</a>" +
+          "</div>";
+        return;
+      }
+
+      // Update navbar
+      document.getElementById("navLoginBtn").textContent = user.name;
+      document.getElementById("navLoginBtn").href = "profile.html";
+
+      // Favorites
+      var favoriteIds = JSON.parse(localStorage.getItem("favorites") || "[]");
+      var favoriteProps = properties.filter(function(p) {
+        return favoriteIds.indexOf(p.id) !== -1;
+      });
+
+      // My Listings (from localStorage)
+      var myListings = JSON.parse(localStorage.getItem("myListings") || "[]");
+
+      // Stats
+      var statsHTML =
+        "<div class='stats-row'>" +
+          "<div class='stat-box'>" +
+            "<div class='stat-number'>" + myListings.length + "</div>" +
+            "<div class='stat-label'>" + window.t('myList') + "</div>" +
+          "</div>" +
+          "<div class='stat-box'>" +
+            "<div class='stat-number'>" + favoriteProps.length + "</div>" +
+            "<div class='stat-label'>" + window.t('favs') + "</div>" +
+          "</div>" +
+        "</div>";
+
+      // Profile Header
+      var headerHTML =
+        "<div class='profile-header'>" +
+          "<div class='profile-avatar'>" + user.name.charAt(0).toUpperCase() + "</div>" +
+          "<div class='profile-info'>" +
+            "<h2>" + user.name + "</h2>" +
+            "<p>" + user.email + "</p>" +
+            "<span class='profile-role'>" + (user.role === "owner" ? "<i class='fa-solid fa-building'></i> " + window.t('optOwner') : "<i class='fa-solid fa-user-graduate'></i> " + window.t('optStudent')) + "</span>" +
+          "</div>" +
+          "<div class='profile-actions'>" +
+            (user.role === "owner" ? "<a href='add-property.html' class='btn btn-primary'>" + window.t('addPropBtn') + "</a>" : "") +
+            "<button class='btn-logout' onclick='logout()'>" + window.t('btnLogout') + "</button>" +
+          "</div>" +
+        "</div>";
+
+      // My Listings Section
+      var myListingsHTML = "";
+      if (myListings.length === 0) {
+        myListingsHTML = "<div class='empty-msg'>" + window.t('noList') + (user.role === "owner" ? "<br/><a href='add-property.html' style='color:var(--primary);font-weight:600;'>" + window.t('addFirst') + "</a>" : "") + "</div>";
+      } else {
+        for (var i = 0; i < myListings.length; i++) {
+           var p = myListings[i];
+           myListingsHTML +=
+             "<div class='mini-card'>" +
+               "<img src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=200' alt='" + p.title + "'/>" +
+               "<div class='mini-card-info'>" +
+                 "<div class='mini-card-title'>" + p.title + "</div>" +
+                 "<div class='mini-card-price'>" + p.price + " " + window.t('egpMonth') + "</div>" +
+               "</div>" +
+             "</div>";
+        }
+      }
+
+      // Favorites Section
+      var favoritesHTML = "";
+      if (favoriteProps.length === 0) {
+        favoritesHTML = "<div class='empty-msg'>" + window.t('noFavs') + "<br/><a href='listings.html' style='color:var(--primary);font-weight:600;'>" + window.t('browseList') + "</a></div>";
+      } else {
+        // لو طالب: بنعمل Loop (لفة) عشان نطابق الـ IDs المفضلة ببيانات العقار الفعلية
+        for (var i = 0; i < favoriteProps.length; i++) {
+          var p = favoriteProps[i];
+          favoritesHTML +=
+            "<div class='mini-card'>" +
+              "<img src='" + p.image + "' alt='" + p.title + "'/>" +
+              "<div class='mini-card-info'>" +
+                "<div class='mini-card-title'>" + p.title + "</div>" +
+                "<div class='mini-card-price'>" + p.price + " " + window.t('egpMonth') + "</div>" +
+              "</div>" +
+              "<a href='details.html?id=" + p.id + "' class='mini-card-btn'>" + window.t('btnView') + "</a>" +
+            "</div>";
+        }
+      }
+
+      content.innerHTML =
+        headerHTML +
+        statsHTML +
+        "<div class='profile-grid'>" +
+          "<div class='profile-section'>" +
+            "<h3><i class='fa-solid fa-house-user'></i> " + window.t('myList') + "</h3>" +
+            myListingsHTML +
+          "</div>" +
+          "<div class='profile-section'>" +
+            "<h3><i class='fa-solid fa-heart' style='color:#e74c3c;'></i> " + window.t('favs') + "</h3>" +
+            favoritesHTML +
+          "</div>" +
+        "</div>";
+    };
+
+    // دالة تسجيل الخروج: بتمسح بيانات التوكن/المستخدم من المتصفح وتطرده بره على الصفحة الرئيسية
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "index.html";
+    }
+  </script>
+
+
+  <!-- Floating Contact Bar -->
+  <div class="floating-bar">
+    <a href="https://wa.me/1234567890" target="_blank" class="float-btn btn-whatsapp" title="Smart Assistant">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="tel:01012345678" class="float-btn btn-phone" title="Call Us">
+      <i class="fas fa-phone"></i>
+    </a>
+    <a href="mailto:info@uninest.com" class="float-btn btn-email" title="Email Us">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</body>
+</html>
