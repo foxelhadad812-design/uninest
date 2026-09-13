@@ -1,0 +1,139 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.OpenApi;
+using UniNest.Infrastructure;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// ── Global file upload size limits (C-2) ─────────────────────────────────────
+// Enforced at the HTTP layer before the request even reaches the controller.
+const long MaxUploadBytes = 5 * 1024 * 1024; // 5 MB
+builder.WebHost.ConfigureKestrel(k =>
+    k.Limits.MaxRequestBodySize = MaxUploadBytes);
+builder.Services.Configure<FormOptions>(o =>
+    o.MultipartBodyLengthLimit = MaxUploadBytes);
+
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddProblemDetails();
+builder.Services.AddHealthChecks().AddDbContextCheck<UniNestDbContext>("database");
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
+    });
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "UniNest API", Version = "v1" });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid JWT token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
+    });
+
+    options.AddSecurityRequirement((doc) =>
+    {
+        var scheme = new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Enter 'Bearer' [space] and then your valid JWT token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
+        };
+        doc.Components ??= new OpenApiComponents();
+        doc.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+        doc.Components.SecuritySchemes["Bearer"] = scheme;
+
+        return new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecuritySchemeReference("Bearer", doc),
+                new List<string>()
+            }
+        };
+    });
+});
+
+// ── CORS (C-3) ────────────────────────────────────────────────────────────────
+// Never use AllowAnyOrigin() in production — it bypasses browser same-origin
+// protection. In Development we allow common local frontend dev servers.
+// In production, set the allowed origins in configuration:
+//   "Cors:AllowedOrigins": ["https://app.uninest.com"]
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .WithOrigins(
+                    "http://localhost:3000",   // React / Next.js dev
+                    "http://localhost:5173",   // Vite dev
+                    "http://localhost:4200",   // Angular dev
+                    "https://localhost:7001")  // HTTPS local
+                .AllowCredentials();
+        }
+        else
+        {
+            // Production: read from configuration.
+            // Set Cors__AllowedOrigins__0=https://app.uninest.com in env vars, or
+            // "Cors": { "AllowedOrigins": ["https://app.uninest.com"] } in appsettings.
+            var allowedOrigins = builder.Configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>() ?? [];
+
+            if (allowedOrigins.Length == 0)
+                throw new InvalidOperationException(
+                    "Cors:AllowedOrigins must be configured in production. " +
+                    "Set at least one allowed origin.");
+
+            policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .WithOrigins(allowedOrigins)
+                .AllowCredentials();
+        }
+    });
+});
+
+var app = builder.Build();
+
+// ── Middleware pipeline (correct order) ───────────────────────────────────────
+app.UseExceptionHandler(exceptionApp => exceptionApp.Run(async context =>
+{
+    var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+    app.Logger.LogError(exception, "Unhandled exception for {Path}", context.Request.Path);
+    await Results.Problem(statusCode: 500, title: "An unexpected error occurred.").ExecuteAsync(context);
+}));
+
+app.UseHttpsRedirection();  // Must be before CORS and static files
+
+if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("EnableSwagger"))
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseStaticFiles();
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapHealthChecks("/health");
+app.MapControllers();
+
+await DatabaseSeeder.SeedAsync(app.Services);
+app.Run();
+
+public partial class Program;

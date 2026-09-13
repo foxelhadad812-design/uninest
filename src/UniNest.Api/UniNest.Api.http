@@ -1,0 +1,24 @@
+@UniNest.Api_HostAddress = http://localhost:5157
+
+GET {{UniNest.Api_HostAddress}}/health
+Accept: application/json
+
+###
+
+GET {{UniNest.Api_HostAddress}}/api/v1/catalog/locations
+Accept: application/json
+
+###
+
+GET {{UniNest.Api_HostAddress}}/api/v1/listings
+Accept: application/json
+
+###
+
+POST {{UniNest.Api_HostAddress}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "demo.owner@uninest.local",
+  "password": "DemoOwner!2345"
+}

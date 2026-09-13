@@ -1,0 +1,25 @@
+## Visual Studio & .NET Build Artifacts
+.vs/
+.vscode/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Database & Local Files
+*.db
+*.db-shm
+*.db-wal
+UniNest.db
+
+## Node & Package Caches
+node_modules/
+.dotnet/
+.tools/
+
+## Temporary Test Scripts
+test_*.ps1
+test_*.py
+verify_*.py

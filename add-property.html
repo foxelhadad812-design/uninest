@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UniNest – Add Property</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .add-page {
+      padding: 40px 0;
+    }
+
+    .add-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 40px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .add-card h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .add-card p {
+      color: var(--text-light);
+      margin-bottom: 32px;
+      font-size: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.2s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .form-group textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .form-group.disabled-field input,
+    .form-group.disabled-field select,
+    .form-group.disabled-field textarea {
+      background: var(--bg);
+      color: var(--text-light);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .amenities-check {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .amenity-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .form-submit:hover {
+      background: var(--primary-dark);
+    }
+
+    .form-submit:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+    }
+
+    .success-msg {
+      display: none;
+      background: #d4edda;
+      color: #155724;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .error-msg {
+      display: none;
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .not-logged {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 2px solid var(--border);
+      margin: 24px 0;
+    }
+
+    .section-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .image-note {
+      font-size: 13px;
+      color: var(--text-light);
+      font-style: italic;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo"><i class="fa-solid fa-house" style="color:var(--primary)"></i> UniNest</div>
+    <ul>
+      <li><a href="index.html" data-i18n="navHome">Home</a></li>
+      <li><a href="listings.html" data-i18n="navListings">Listings</a></li>
+      <li><a href="login.html" class="btn-login" id="navLoginBtn" data-i18n="navLogin">Login</a></li>
+      <li><a href="#" onclick="toggleDarkMode()" id="darkModeBtn"><i class="fa-solid fa-moon"></i></a></li>
+      <li><a href="#" onclick="switchLang()" data-i18n="langToggle">عربي <i class="fa-solid fa-globe"></i></a></li>
+    </ul>
+  </nav>
+
+  <div class="add-page">
+    <div class="container" id="pageContent">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p data-i18n="footerRight">© 2026 UniNest. Developed with ❤️ by EELU Students.</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/lang.js"></script>
+  <script src="js/add-property.js"></script>
+
+  <!-- Floating Contact Bar -->
+  <div class="floating-bar">
+    <a href="https://wa.me/1234567890" target="_blank" class="float-btn btn-whatsapp" title="Smart Assistant">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="tel:01012345678" class="float-btn btn-phone" title="Call Us">
+      <i class="fas fa-phone"></i>
+    </a>
+    <a href="mailto:info@uninest.com" class="float-btn btn-email" title="Email Us">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</body>
+</html>
