@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi;
 using UniNest.Infrastructure;
@@ -17,6 +19,43 @@ builder.Services.Configure<FormOptions>(o =>
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddProblemDetails();
+
+// ── Rate Limiting ─────────────────────────────────────────────────────────────
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            status = 429,
+            title = "Too Many Requests",
+            detail = "You have exceeded the rate limit. Please wait a moment and try again."
+        }, cancellationToken: token);
+    };
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        if (httpContext.Request.Path.StartsWithSegments("/health"))
+        {
+            return RateLimitPartition.GetNoLimiter("health");
+        }
+
+        var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: clientIp,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 120, // 120 requests per minute per IP
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 10
+            });
+    });
+});
+
 builder.Services.AddHealthChecks().AddDbContextCheck<UniNestDbContext>("database");
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -127,6 +166,7 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("EnableS
 
 app.UseStaticFiles();
 app.UseCors();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
