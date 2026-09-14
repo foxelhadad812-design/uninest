@@ -72,12 +72,7 @@ async function displayFeaturedListings() {
 
   if (html) {
     container.innerHTML = html;
-  } else {
-    container.innerHTML =
-      "<div class='card' style='position:relative;'><img src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80' referrerpolicy='no-referrer' crossorigin='anonymous' style='width:100%;height:200px;object-fit:cover;border-radius:12px 12px 0 0;'><div class='card-body'><h3 style='font-size:16px;font-weight:700;'>Apartment near Fayoum University</h3><div style='font-size:18px;font-weight:700;color:var(--primary);'>3,500 EGP/mo</div><a href='details.html?id=1' class='btn btn-primary' style='width:100%;text-align:center;margin-top:10px;display:inline-block;'>View Details</a></div></div>" +
-      "<div class='card' style='position:relative;'><img src='https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80' referrerpolicy='no-referrer' crossorigin='anonymous' style='width:100%;height:200px;object-fit:cover;border-radius:12px 12px 0 0;'><div class='card-body'><h3 style='font-size:16px;font-weight:700;'>Single Room near EELU Fayoum</h3><div style='font-size:18px;font-weight:700;color:var(--primary);'>3,800 EGP/mo</div><a href='details.html?id=2' class='btn btn-primary' style='width:100%;text-align:center;margin-top:10px;display:inline-block;'>View Details</a></div></div>";
   }
-}
 }
 
 // Search functionality
@@ -92,7 +87,7 @@ function searchListings() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+function initIndex() {
   var searchInput = document.getElementById("searchInput");
   if (searchInput) {
     searchInput.addEventListener("keypress", function (e) {
@@ -100,4 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
   displayFeaturedListings();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initIndex);
+} else {
+  initIndex();
+}
