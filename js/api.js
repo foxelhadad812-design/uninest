@@ -177,11 +177,22 @@
         return auth;
       } catch (err) {
         if (!err.status || err.message.indexOf("fetch") !== -1 || err.message.indexOf("Request failed") !== -1 || err.message.indexOf("Failed to fetch") !== -1) {
+          var demoUsers = {
+            "demo.student@uninest.local": { password: "Student123!", name: "Student User", role: "Student", gender: "male" },
+            "demo.owner@uninest.local": { password: "Owner123!", name: "Owner User", role: "Owner", gender: "male" },
+            "demo.admin@uninest.local": { password: "Admin123!", name: "Admin User", role: "Admin", gender: "male" },
+            "moamen@uninest.local": { password: "Password123!", name: "Moamen Hamouda", role: "Owner", gender: "male" }
+          };
+
+          var lowerEmail = (email || "").toLowerCase().trim();
           var registeredUsers = JSON.parse(localStorage.getItem("uninest.users") || "[]");
-          var found = registeredUsers.find(function(u) { return u.email.toLowerCase() === email.toLowerCase(); });
+          var found = registeredUsers.find(function(u) { return (u.email || "").toLowerCase() === lowerEmail; });
+
           if (found) {
-            if (found.password && found.password !== password) {
-              throw new Error("Invalid email or password.");
+            if (found.password !== password) {
+              var error1 = new Error("Invalid email or password.");
+              error1.status = 401;
+              throw error1;
             }
             var mockAuth = {
               accessToken: "token_" + Date.now(),
@@ -191,23 +202,32 @@
             saveSession(mockAuth);
             return mockAuth;
           }
-          if (email && email.indexOf("@") !== -1) {
-            var isOwner = email.indexOf("owner") !== -1;
-            var defaultUser = {
-              id: "user_" + Date.now(),
-              displayName: email.split("@")[0],
-              email: email,
-              roles: isOwner ? ["Owner"] : ["Student"],
-              gender: "male"
-            };
-            var mockDemoAuth = {
+
+          if (demoUsers[lowerEmail]) {
+            var demo = demoUsers[lowerEmail];
+            if (demo.password !== password) {
+              var error2 = new Error("Invalid email or password.");
+              error2.status = 401;
+              throw error2;
+            }
+            var demoAuth = {
               accessToken: "token_" + Date.now(),
               refreshToken: "refresh_" + Date.now(),
-              user: defaultUser
+              user: {
+                id: "demo_" + lowerEmail,
+                displayName: demo.name,
+                email: lowerEmail,
+                roles: [demo.role],
+                gender: demo.gender
+              }
             };
-            saveSession(mockDemoAuth);
-            return mockDemoAuth;
+            saveSession(demoAuth);
+            return demoAuth;
           }
+
+          var notFoundErr = new Error("Email is not registered. Please create a new account first.");
+          notFoundErr.status = 401;
+          throw notFoundErr;
         }
         throw err;
       }
@@ -224,19 +244,22 @@
       } catch (err) {
         if (!err.status || err.message.indexOf("fetch") !== -1 || err.message.indexOf("Request failed") !== -1 || err.message.indexOf("Failed to fetch") !== -1) {
           var registeredUsers = JSON.parse(localStorage.getItem("uninest.users") || "[]");
-          var emailExists = registeredUsers.some(function(u) { return u.email.toLowerCase() === payload.email.toLowerCase(); });
-          if (emailExists) {
-            throw new Error("A user with this email already exists.");
+          var lowerEmail = (payload.email || "").toLowerCase().trim();
+          var emailExists = registeredUsers.some(function(u) { return (u.email || "").toLowerCase() === lowerEmail; });
+          if (emailExists || lowerEmail === "demo.student@uninest.local" || lowerEmail === "demo.owner@uninest.local") {
+            var dupErr = new Error("A user with this email address already exists.");
+            dupErr.status = 400;
+            throw dupErr;
           }
-          var roleName = payload.role === "owner" ? "Owner" : "Student";
+          var roleName = (payload.role === "Owner" || payload.role === "owner") ? "Owner" : "Student";
           var userObj = {
             id: "user_" + Date.now(),
             displayName: payload.displayName || payload.email.split("@")[0],
-            email: payload.email,
+            email: lowerEmail,
             roles: [roleName],
-            gender: payload.gender || "male"
+            gender: (payload.gender || "Male").toLowerCase()
           };
-          registeredUsers.push({ email: payload.email, password: payload.password, userPayload: userObj });
+          registeredUsers.push({ email: lowerEmail, password: payload.password, userPayload: userObj });
           localStorage.setItem("uninest.users", JSON.stringify(registeredUsers));
 
           var mockAuth = {

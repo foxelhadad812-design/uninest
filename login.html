@@ -407,27 +407,19 @@
         }).catch(function (err) {
           btn.disabled = false;
           btn.textContent = "Login";
-          if (err.status === 401) {
-            errorMsg.textContent = "❌ Invalid email or password.";
-            errorMsg.style.display = "block";
-          } else if (err.status === 423) {
-            errorMsg.textContent = "🔒 Account is temporarily locked. Try again later.";
-            errorMsg.style.display = "block";
-          } else if (err.status === 400) {
-            var detail = err.payload && err.payload.detail ? err.payload.detail
-              : (err.payload && err.payload.title ? err.payload.title
-              : "Invalid request.");
-            errorMsg.textContent = "❌ " + detail;
-            errorMsg.style.display = "block";
-          } else {
-            errorMsg.textContent = "❌ Login failed. Please try again.";
-            errorMsg.style.display = "block";
+          var msg = err.message || "Invalid email or password.";
+          if (err.status === 423) {
+            msg = "Account is temporarily locked. Try again later.";
+          } else if (err.status === 400 && err.payload) {
+            msg = err.payload.detail || err.payload.title || msg;
           }
+          errorMsg.textContent = "❌ " + msg;
+          errorMsg.style.display = "block";
         });
       } catch (err) {
         btn.disabled = false;
         btn.textContent = "Login";
-        errorMsg.textContent = "❌ Login failed. Please try again.";
+        errorMsg.textContent = "❌ " + (err.message || "Login failed. Please try again.");
         errorMsg.style.display = "block";
       }
     }
