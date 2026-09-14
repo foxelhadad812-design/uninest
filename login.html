@@ -334,6 +334,7 @@
     <p data-i18n="footerRight">© 2026 UniNest. Developed with ❤️ by EELU Students.</p>
   </footer>
 
+  <script src="js/api.js"></script>
   <script src="js/lang.js"></script>
   <script>
     // التشغيل التلقائي اول ما الصفحة تحمل (window.onload)
@@ -545,7 +546,7 @@
     }
 
     function checkPasswordStrength(password) {
-      var lengthValid = password.length >= 12;
+      var lengthValid = password.length >= 8;
       var lowerValid = /[a-z]/.test(password);
       var upperValid = /[A-Z]/.test(password);
       var digitValid = /[0-9]/.test(password);

@@ -6,7 +6,12 @@
   var PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400";
 
   function apiBase() {
-    return localStorage.getItem(BASE_KEY) || "http://localhost:5157";
+    var custom = localStorage.getItem(BASE_KEY);
+    if (custom) return custom;
+    if (typeof window !== "undefined" && window.location && window.location.origin && window.location.origin.indexOf("http") === 0) {
+      return window.location.origin;
+    }
+    return "http://localhost:5157";
   }
 
   function getAccessToken() {
