@@ -171,14 +171,15 @@ function renderListings(data) {
       html += "<span style='background:#2196f3; color:#fff; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold;'>" + window.t("badgeMale") + "</span>";
     html += "</div>";
     html += "<button onclick='toggleFavorite(" + JSON.stringify(String(p.id)) + ")' title='Add to Favorites' style='position:absolute; top:12px; left:12px; background:white; border:none; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.2); z-index:10; font-size:16px; transition: transform 0.2s;' onmouseover='this.style.transform=\"scale(1.1)\"' onmouseout='this.style.transform=\"scale(1)\"'>" + heartIcon + "</button>";
-    html += "<img src='" + p.image + "' alt='" + p.title + "'/>";
+    var fallbackImg = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=80";
+    html += "<img src='" + (p.image || fallbackImg) + "' alt='" + tTitle + "' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\" style='width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;'/>";
     html += "<div class='card-body'>";
-    html += "<h3 style='font-size:16px;margin-bottom:4px;'>" + tTitle + "</h3>";
+    html += "<h3 style='font-size:16px;margin-bottom:4px; font-weight:700;'>" + tTitle + "</h3>";
     html += "<div style='font-size:13px; color:#f39c12; margin-bottom:10px;'><i class='fa-solid fa-star'></i> " + ratingScore + " <span style='color:var(--text-light); font-size:12px;'>(" + ratingCount + " " + window.t("reviewsLbl") + ")</span></div>";
-    html += "<div class='card-price'>" + p.price + " " + window.t("egpMonth") + "</div>";
-    html += "<div class='card-location'><i class='fa-solid fa-location-dot'></i> " + tLoc + "</div>";
-    html += "<p style='font-size:13px;margin-bottom:12px;'><i class='fa-solid fa-layer-group'></i> " + p.rooms + " " + window.t("roomsWord") + " · " + tType + "</p>";
-    html += "<a href='details.html?id=" + p.id + "' class='btn btn-primary'>" + window.t("btnView") + "</a>";
+    html += "<div class='card-price' style='font-weight:700; color:var(--primary); font-size:18px; margin-bottom:6px;'>" + Number(p.price).toLocaleString() + " " + window.t("egpMonth") + "</div>";
+    html += "<div class='card-location' style='font-size:13px; color:var(--text-light); margin-bottom:8px;'><i class='fa-solid fa-location-dot'></i> " + tLoc + "</div>";
+    html += "<p style='font-size:13px;margin-bottom:12px; color:var(--text);'><i class='fa-solid fa-door-open'></i> " + p.rooms + " " + window.t("roomsWord") + " · <i class='fa-solid fa-layer-group'></i> " + tType + "</p>";
+    html += "<a href='details.html?id=" + p.id + "' class='btn btn-primary' style='width:100%; text-align:center; padding:10px; border-radius:8px; display:inline-block; text-decoration:none;'>" + window.t("btnView") + "</a>";
     html += "</div></div>";
   }
   grid.innerHTML = html;

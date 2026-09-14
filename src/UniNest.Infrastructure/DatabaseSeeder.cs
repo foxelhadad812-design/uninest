@@ -130,46 +130,84 @@ public static class DatabaseSeeder
         await EnsureUserAsync(users, "demo.admin@uninest.local", "Demo Admin", "Admin", Gender.Unspecified, "DemoAdmin!2345");
         await EnsureUserAsync(users, "demo.student@uninest.local", "Demo Student", "Student", Gender.Male, "DemoStudent!2345");
 
-        if (await db.Listings.AnyAsync()) return;
-
         var now = DateTimeOffset.UtcNow;
         var seedListings = new[]
         {
-            new { TitleEn = "Apartment near Fayoum University", TitleAr = "شقة بالقرب من جامعة الفيوم", City = "Fayoum", Type = ListingType.EntireApartment, Policy = GenderPolicy.Any, Rent = 3500m, Rooms = (short)2, Beds = (short)2, Phone = "01007272508", Amenities = new[] { "WIFI", "AC", "KITCHEN" }, DescEn = "Spacious apartment near Fayoum University, fully furnished, quiet neighborhood.", DescAr = "شقة واسعة بالقرب من جامعة الفيوم، مفروشة بالكامل، في حي هادئ." },
-            new { TitleEn = "Single Room near EELU Fayoum", TitleAr = "غرفة مفردة بالقرب من الجامعة الأهلية بالفيوم", City = "Fayoum", Type = ListingType.PrivateRoom, Policy = GenderPolicy.MaleOnly, Rent = 3800m, Rooms = (short)1, Beds = (short)1, Phone = "01012557656", Amenities = new[] { "WIFI", "KITCHEN" }, DescEn = "Cozy single room, 10 minutes from EELU Fayoum branch, all utilities included.", DescAr = "غرفة مفردة مريحة، على بعد 10 دقائق من فرع الجامعة الأهلية بالفيوم، شاملة كل المرافق." },
-            new { TitleEn = "Studio Apartment near Cairo University", TitleAr = "استوديو سكن بالقرب من جامعة القاهرة", City = "Giza", Type = ListingType.EntireApartment, Policy = GenderPolicy.Any, Rent = 6500m, Rooms = (short)1, Beds = (short)1, Phone = "01066805363", Amenities = new[] { "WIFI", "AC", "KITCHEN", "PARKING" }, DescEn = "Modern studio apartment, fully furnished, 5 minutes from Cairo University.", DescAr = "شقة استوديو حديثة مفروشة بالكامل، على بعد 5 دقائق من جامعة القاهرة." },
-            new { TitleEn = "Single Room near Alexandria University", TitleAr = "غرفة مفردة بالقرب من جامعة الإسكندرية", City = "Alexandria", Type = ListingType.PrivateRoom, Policy = GenderPolicy.Any, Rent = 3600m, Rooms = (short)1, Beds = (short)1, Phone = "01032894477", Amenities = new[] { "WIFI", "KITCHEN" }, DescEn = "Clean and quiet single room near Alexandria University campus.", DescAr = "غرفة مفردة نظيفة وهادئة بالقرب من حرم جامعة الإسكندرية." },
-            new { TitleEn = "Shared Room near Mansoura University", TitleAr = "غرفة مشتركة بالقرب من جامعة المنصورة", City = "Mansoura", Type = ListingType.SharedBed, Policy = GenderPolicy.MaleOnly, Rent = 3100m, Rooms = (short)1, Beds = (short)2, Phone = "01009229692", Amenities = new[] { "WIFI", "WASHER" }, DescEn = "Affordable shared room for students, close to transportation and markets.", DescAr = "غرفة مشتركة بأسعار اقتصادية للطلاب، قريبة من المواصلات والأسواق." },
-            new { TitleEn = "Cozy Shared Room in Fayoum", TitleAr = "غرفة مشتركة مريحة للبنات", City = "Fayoum", Type = ListingType.SharedBed, Policy = GenderPolicy.FemaleOnly, Rent = 3900m, Rooms = (short)1, Beds = (short)2, Phone = "01166778899", Amenities = new[] { "WIFI", "AC" }, DescEn = "Recently painted cozy room with private bathroom access.", DescAr = "غرفة مريحة مطلية حديثاً مع حمام خاص." }
+            new { TitleEn = "Luxury 3-Bedroom Student Apartment", TitleAr = "شقة فاخرة 3 غرف نوم للطلاب", City = "Fayoum", Type = ListingType.EntireApartment, Policy = GenderPolicy.Any, Rent = 4500m, Rooms = (short)3, Beds = (short)3, Phone = "01007272508", Amenities = new[] { "WIFI", "AC", "KITCHEN", "ELEVATOR" }, DescEn = "Spacious 3-bedroom apartment near Fayoum University, fully furnished with high-speed internet, air conditioning, and a modern kitchen.", DescAr = "شقة واسعة 3 غرف نوم بالقرب من جامعة الفيوم، مفروشة بالكامل مع إنترنت عالي السرعة وتكييف ومطبخ حديث.", ImageUrl = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=80" },
+            new { TitleEn = "Modern Studio near EELU Fayoum", TitleAr = "استوديو حديث بالقرب من الجامعة الأهلية بالفيوم", City = "Fayoum", Type = ListingType.EntireApartment, Policy = GenderPolicy.MaleOnly, Rent = 3800m, Rooms = (short)1, Beds = (short)1, Phone = "01012557656", Amenities = new[] { "WIFI", "KITCHEN", "AC" }, DescEn = "Cozy single studio room, 10 minutes from EELU Fayoum branch, all utilities included with quiet study environment.", DescAr = "استوديو مفرد مريح، على بعد 10 دقائق من فرع الجامعة الأهلية بالفيوم، شامل كافة المرافق مع بيئة هادئة للدراسة.", ImageUrl = "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop&q=80" },
+            new { TitleEn = "Spacious 4-Room Student Residence in Giza", TitleAr = "سكن طلاب 4 غرف واسع بالجيزة", City = "Giza", Type = ListingType.EntireApartment, Policy = GenderPolicy.Any, Rent = 7500m, Rooms = (short)4, Beds = (short)4, Phone = "01066805363", Amenities = new[] { "WIFI", "AC", "KITCHEN", "PARKING", "ELEVATOR" }, DescEn = "Prime location 4-room apartment 5 minutes from Cairo University. Features balcony, elevator, and fully equipped kitchen.", DescAr = "شقة 4 غرف بموقع متميز على بعد 5 دقائق من جامعة القاهرة. تتميز ببلكونة ومصعد ومطبخ مجهز بالكامل.", ImageUrl = "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop&q=80" },
+            new { TitleEn = "Private Single Room near Alex University", TitleAr = "غرفة مفردة خاصة بالقرب من جامعة الإسكندرية", City = "Alexandria", Type = ListingType.PrivateRoom, Policy = GenderPolicy.Any, Rent = 3600m, Rooms = (short)1, Beds = (short)1, Phone = "01032894477", Amenities = new[] { "WIFI", "KITCHEN", "WASHER" }, DescEn = "Clean and quiet single room near Alexandria University campus with sea view and high speed Wi-Fi.", DescAr = "غرفة مفردة نظيفة وهادئة بالقرب من حرم جامعة الإسكندرية مع إطلالة رائعة وواي فاي سريع.", ImageUrl = "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&auto=format&fit=crop&q=80" },
+            new { TitleEn = "Economical Shared Bed in Mansoura", TitleAr = "سرير في غرفة مشتركة بالمنصورة", City = "Mansoura", Type = ListingType.SharedBed, Policy = GenderPolicy.MaleOnly, Rent = 2200m, Rooms = (short)2, Beds = (short)4, Phone = "01009229692", Amenities = new[] { "WIFI", "WASHER" }, DescEn = "Affordable shared room for male students, close to Mansoura University and main transportation hubs.", DescAr = "سرير متاح في غرفة مشتركة بأسعار اقتصادية للطلاب، قريبة من جامعة المنصورة والمواصلات.", ImageUrl = "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800&auto=format&fit=crop&q=80" },
+            new { TitleEn = "Premium 2-Bed Female Suite in Fayoum", TitleAr = "سويت مفروش للبنات 2 غرفة بالفيوم", City = "Fayoum", Type = ListingType.EntireApartment, Policy = GenderPolicy.FemaleOnly, Rent = 4200m, Rooms = (short)2, Beds = (short)2, Phone = "01166778899", Amenities = new[] { "WIFI", "AC", "KITCHEN", "WASHER" }, DescEn = "Exclusive cozy suite for female students with private security, balconies, and study desks.", DescAr = "سويت مريح مخصص للطالبات يوفر أمان خاص، بلكونات، ومكاتب للمذاكرة.", ImageUrl = "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&auto=format&fit=crop&q=80" },
+            new { TitleEn = "Modern 5-Bedroom Villa Flat near Ain Shams", TitleAr = "شقة 5 غرف واسعة بالقرب من عين شمس", City = "Cairo", Type = ListingType.EntireApartment, Policy = GenderPolicy.Any, Rent = 8500m, Rooms = (short)5, Beds = (short)5, Phone = "01011223344", Amenities = new[] { "WIFI", "AC", "KITCHEN", "PARKING", "ELEVATOR", "WASHER" }, DescEn = "Huge 5-bedroom luxury residence ideal for group student living near Ain Shams University.", DescAr = "شقة كبيرة 5 غرف نوم فاخرة مثالية لمجموعات الطلاب بالقرب من جامعة عين شمس.", ImageUrl = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=80" },
+            new { TitleEn = "Sunny Private Room in Alexandria", TitleAr = "غرفة خاصة مشمسة بالإسكندرية", City = "Alexandria", Type = ListingType.PrivateRoom, Policy = GenderPolicy.FemaleOnly, Rent = 3400m, Rooms = (short)1, Beds = (short)1, Phone = "01055443322", Amenities = new[] { "WIFI", "KITCHEN", "ELEVATOR" }, DescEn = "Bright private room for female student with desk, wardrobe, and high-speed Wi-Fi.", DescAr = "غرفة خاصة مشمسة ومضيئة لطالبة تحتوي على مكتب ودولاب وواي فاي سريع.", ImageUrl = "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80" }
         };
 
         foreach (var item in seedListings)
         {
             if (!locations.TryGetValue(item.City, out var location)) continue;
 
-            var listing = new Listing
+            var existingListing = await db.Listings.FirstOrDefaultAsync(l => l.TitleEn == item.TitleEn || l.TitleAr == item.TitleAr);
+            Listing listing;
+            if (existingListing != null)
             {
-                Id = Guid.NewGuid(),
-                OwnerUserId = owner.Id,
-                LocationId = location.Id,
-                TitleEn = item.TitleEn,
-                TitleAr = item.TitleAr,
-                DescriptionEn = item.DescEn,
-                DescriptionAr = item.DescAr,
-                ListingType = item.Type,
-                GenderPolicy = item.Policy,
-                MonthlyRent = item.Rent,
-                Currency = "EGP",
-                RoomCount = item.Rooms,
-                TotalBeds = item.Beds,
-                AvailableBeds = item.Beds,
-                Status = ListingStatus.Published,
-                ContactPhone = item.Phone,
-                PublishedAt = now,
-                ModeratedAt = now
-            };
+                listing = existingListing;
+            }
+            else
+            {
+                listing = new Listing
+                {
+                    Id = Guid.NewGuid(),
+                    OwnerUserId = owner.Id,
+                    LocationId = location.Id,
+                    TitleEn = item.TitleEn,
+                    TitleAr = item.TitleAr,
+                    DescriptionEn = item.DescEn,
+                    DescriptionAr = item.DescAr,
+                    ListingType = item.Type,
+                    GenderPolicy = item.Policy,
+                    MonthlyRent = item.Rent,
+                    Currency = "EGP",
+                    RoomCount = item.Rooms,
+                    TotalBeds = item.Beds,
+                    AvailableBeds = item.Beds,
+                    Status = ListingStatus.Published,
+                    ContactPhone = item.Phone,
+                    PublishedAt = now,
+                    ModeratedAt = now
+                };
+                db.Listings.Add(listing);
+            }
 
-            db.Listings.Add(listing);
+            var hasImg = await db.ListingImages.AnyAsync(li => li.ListingId == listing.Id);
+            if (!hasImg)
+            {
+                var media = new MediaAsset
+                {
+                    Id = Guid.NewGuid(),
+                    UploadedByUserId = owner.Id,
+                    StorageKey = item.ImageUrl,
+                    OriginalFileName = "property.jpg",
+                    ContentType = "image/jpeg",
+                    ByteSize = 1024 * 500,
+                    ChecksumSha256 = Guid.NewGuid().ToString("N"),
+                    ScanStatus = DocumentScanStatus.Clean,
+                    CreatedAt = now
+                };
+                db.MediaAssets.Add(media);
+
+                db.ListingImages.Add(new ListingImage
+                {
+                    Id = Guid.NewGuid(),
+                    ListingId = listing.Id,
+                    MediaAssetId = media.Id,
+                    SortOrder = 0,
+                    Status = ImageStatus.Approved,
+                    IsPrimary = true,
+                    CreatedAt = now
+                });
+            }
+
             foreach (var code in item.Amenities)
             {
                 if (!amenities.TryGetValue(code, out var amenity)) continue;
