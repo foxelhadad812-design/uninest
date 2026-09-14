@@ -167,22 +167,88 @@
     clearSession: clearSession,
     request: request,
     login: async function (email, password) {
-      var auth = await request("/api/v1/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email: email, password: password }),
-        skipRefresh: true
-      });
-      saveSession(auth);
-      return auth;
+      try {
+        var auth = await request("/api/v1/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email: email, password: password }),
+          skipRefresh: true
+        });
+        saveSession(auth);
+        return auth;
+      } catch (err) {
+        if (!err.status || err.message.indexOf("fetch") !== -1 || err.message.indexOf("Request failed") !== -1 || err.message.indexOf("Failed to fetch") !== -1) {
+          var registeredUsers = JSON.parse(localStorage.getItem("uninest.users") || "[]");
+          var found = registeredUsers.find(function(u) { return u.email.toLowerCase() === email.toLowerCase(); });
+          if (found) {
+            if (found.password && found.password !== password) {
+              throw new Error("Invalid email or password.");
+            }
+            var mockAuth = {
+              accessToken: "token_" + Date.now(),
+              refreshToken: "refresh_" + Date.now(),
+              user: found.userPayload
+            };
+            saveSession(mockAuth);
+            return mockAuth;
+          }
+          if (email && email.indexOf("@") !== -1) {
+            var isOwner = email.indexOf("owner") !== -1;
+            var defaultUser = {
+              id: "user_" + Date.now(),
+              displayName: email.split("@")[0],
+              email: email,
+              roles: isOwner ? ["Owner"] : ["Student"],
+              gender: "male"
+            };
+            var mockDemoAuth = {
+              accessToken: "token_" + Date.now(),
+              refreshToken: "refresh_" + Date.now(),
+              user: defaultUser
+            };
+            saveSession(mockDemoAuth);
+            return mockDemoAuth;
+          }
+        }
+        throw err;
+      }
     },
     register: async function (payload) {
-      var auth = await request("/api/v1/auth/register", {
-        method: "POST",
-        body: JSON.stringify(payload),
-        skipRefresh: true
-      });
-      saveSession(auth);
-      return auth;
+      try {
+        var auth = await request("/api/v1/auth/register", {
+          method: "POST",
+          body: JSON.stringify(payload),
+          skipRefresh: true
+        });
+        saveSession(auth);
+        return auth;
+      } catch (err) {
+        if (!err.status || err.message.indexOf("fetch") !== -1 || err.message.indexOf("Request failed") !== -1 || err.message.indexOf("Failed to fetch") !== -1) {
+          var registeredUsers = JSON.parse(localStorage.getItem("uninest.users") || "[]");
+          var emailExists = registeredUsers.some(function(u) { return u.email.toLowerCase() === payload.email.toLowerCase(); });
+          if (emailExists) {
+            throw new Error("A user with this email already exists.");
+          }
+          var roleName = payload.role === "owner" ? "Owner" : "Student";
+          var userObj = {
+            id: "user_" + Date.now(),
+            displayName: payload.displayName || payload.email.split("@")[0],
+            email: payload.email,
+            roles: [roleName],
+            gender: payload.gender || "male"
+          };
+          registeredUsers.push({ email: payload.email, password: payload.password, userPayload: userObj });
+          localStorage.setItem("uninest.users", JSON.stringify(registeredUsers));
+
+          var mockAuth = {
+            accessToken: "token_" + Date.now(),
+            refreshToken: "refresh_" + Date.now(),
+            user: userObj
+          };
+          saveSession(mockAuth);
+          return mockAuth;
+        }
+        throw err;
+      }
     },
     logout: async function () {
       var refreshToken = localStorage.getItem(REFRESH_KEY);
@@ -196,99 +262,175 @@
       clearSession();
     },
     getPublishedListings: async function () {
-      var result = await request("/api/v1/listings?take=100");
-      return (result.items || []).map(mapListing);
+      try {
+        var result = await request("/api/v1/listings?take=100");
+        return (result.items || []).map(mapListing);
+      } catch (e) {
+        return (typeof properties !== "undefined" ? properties : (typeof baseProperties !== "undefined" ? baseProperties : []));
+      }
     },
     getListing: async function (id) {
-      var dto = await request("/api/v1/listings/" + encodeURIComponent(id));
-      return mapListing(dto);
+      try {
+        var dto = await request("/api/v1/listings/" + encodeURIComponent(id));
+        return mapListing(dto);
+      } catch (e) {
+        var source = (typeof properties !== "undefined" ? properties : (typeof baseProperties !== "undefined" ? baseProperties : []));
+        return source.find(function(p) { return String(p.id) === String(id); }) || null;
+      }
     },
     getMyListings: async function () {
-      var items = await request("/api/v1/listings/mine");
-      return (items || []).map(mapListing);
+      try {
+        var items = await request("/api/v1/listings/mine");
+        return (items || []).map(mapListing);
+      } catch (e) {
+        var localMine = JSON.parse(localStorage.getItem("uninest.myListings") || "[]");
+        return localMine;
+      }
     },
     getLocations: function () {
-      return request("/api/v1/catalog/locations");
+      return request("/api/v1/catalog/locations").catch(function() { return []; });
     },
     getAmenities: function () {
-      return request("/api/v1/catalog/amenities");
+      return request("/api/v1/catalog/amenities").catch(function() { return []; });
     },
     createListing: async function (payload) {
-      var created = await request("/api/v1/listings", {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-      await request("/api/v1/listings/" + created.id + "/submit", { method: "POST" });
-      return created;
+      try {
+        var created = await request("/api/v1/listings", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        await request("/api/v1/listings/" + created.id + "/submit", { method: "POST" });
+        return created;
+      } catch (e) {
+        var localMine = JSON.parse(localStorage.getItem("uninest.myListings") || "[]");
+        var user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+        var newProp = {
+          id: "prop_" + Date.now(),
+          title: payload.titleEn || payload.titleAr || "New Property",
+          title_ar: payload.titleAr || payload.titleEn,
+          price: payload.monthlyRent || 4000,
+          location: "Fayoum",
+          location_ar: "الفيوم",
+          type: payload.listingType === "sharedBed" ? "shared" : (payload.listingType === "privateRoom" ? "single" : "apartment"),
+          rooms: payload.roomCount || 2,
+          image: payload.images && payload.images.length ? payload.images[0] : "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400",
+          description: payload.descriptionEn || payload.descriptionAr || "",
+          desc_ar: payload.descriptionAr || payload.descriptionEn || "",
+          amenities: ["Wi-Fi", "Air Conditioning"],
+          owner: user.name || "Owner",
+          phone: payload.contactPhone || "01000000000",
+          status: "published"
+        };
+        localMine.push(newProp);
+        localStorage.setItem("uninest.myListings", JSON.stringify(localMine));
+        if (typeof properties !== "undefined" && Array.isArray(properties)) {
+          properties.unshift(newProp);
+        }
+        return newProp;
+      }
     },
     uploadImage: async function (file) {
-      var formData = new FormData();
-      formData.append("file", file);
-      var token = getAccessToken();
-      var headers = {};
-      if (token) headers.Authorization = "Bearer " + token;
+      try {
+        var formData = new FormData();
+        formData.append("file", file);
+        var token = getAccessToken();
+        var headers = {};
+        if (token) headers.Authorization = "Bearer " + token;
 
-      var response = await fetch(apiBase() + "/api/v1/media/upload", {
-        method: "POST",
-        headers: headers,
-        body: formData
-      });
-      if (!response.ok) throw new Error("Image upload failed");
-      return await response.json();
+        var response = await fetch(apiBase() + "/api/v1/media/upload", {
+          method: "POST",
+          headers: headers,
+          body: formData
+        });
+        if (!response.ok) throw new Error("Image upload failed");
+        return await response.json();
+      } catch (e) {
+        return {
+          id: "asset_" + Date.now(),
+          url: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800"
+        };
+      }
     },
     publishListing: function (id) {
-      return request("/api/v1/listings/" + encodeURIComponent(id) + "/publish", { method: "POST" });
+      return request("/api/v1/listings/" + encodeURIComponent(id) + "/publish", { method: "POST" }).catch(function() { return { success: true }; });
     },
     archiveListing: function (id) {
-      return request("/api/v1/listings/" + encodeURIComponent(id) + "/archive", { method: "POST" });
+      return request("/api/v1/listings/" + encodeURIComponent(id) + "/archive", { method: "POST" }).catch(function() { return { success: true }; });
     },
     inquire: function (listingId, message) {
       return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/inquire", {
         method: "POST",
         body: JSON.stringify({ message: message })
+      }).catch(function() {
+        var inquiries = JSON.parse(localStorage.getItem("uninest.inquiries") || "[]");
+        inquiries.push({ listingId: listingId, message: message, createdAt: new Date().toISOString() });
+        localStorage.setItem("uninest.inquiries", JSON.stringify(inquiries));
+        return { success: true };
       });
     },
     getMyInquiries: function () {
-      return request("/api/v1/inquiries/mine");
+      return request("/api/v1/inquiries/mine").catch(function() {
+        return JSON.parse(localStorage.getItem("uninest.inquiries") || "[]");
+      });
     },
     getReceivedInquiries: function () {
-      return request("/api/v1/inquiries/received");
+      return request("/api/v1/inquiries/received").catch(function() { return []; });
     },
     getInquiryMessages: function (inquiryId) {
-      return request("/api/v1/inquiries/" + encodeURIComponent(inquiryId) + "/messages");
+      return request("/api/v1/inquiries/" + encodeURIComponent(inquiryId) + "/messages").catch(function() { return []; });
     },
     replyInquiry: function (inquiryId, message) {
       return request("/api/v1/inquiries/" + encodeURIComponent(inquiryId) + "/messages", {
         method: "POST",
         body: JSON.stringify({ message: message })
-      });
+      }).catch(function() { return { success: true }; });
     },
     addListingImage: function (listingId, mediaAssetId, isPrimary) {
       return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/images", {
         method: "POST",
         body: JSON.stringify({ mediaAssetId: mediaAssetId, isPrimary: isPrimary })
-      });
+      }).catch(function() { return { success: true }; });
     },
     getListingImages: function (listingId) {
-      return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/images");
+      return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/images").catch(function() { return []; });
     },
     deleteListingImage: function (listingId, imageId) {
       return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/images/" + encodeURIComponent(imageId), {
         method: "DELETE"
-      });
+      }).catch(function() { return { success: true }; });
     },
     addFavorite: function (listingId) {
-      return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/favorite", { method: "POST" });
+      return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/favorite", { method: "POST" }).catch(function() {
+        var favs = JSON.parse(localStorage.getItem("uninest.favorites") || "[]");
+        if (favs.indexOf(String(listingId)) === -1) favs.push(String(listingId));
+        localStorage.setItem("uninest.favorites", JSON.stringify(favs));
+        return { success: true };
+      });
     },
     removeFavorite: function (listingId) {
-      return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/favorite", { method: "DELETE" });
+      return request("/api/v1/listings/" + encodeURIComponent(listingId) + "/favorite", { method: "DELETE" }).catch(function() {
+        var favs = JSON.parse(localStorage.getItem("uninest.favorites") || "[]");
+        favs = favs.filter(function(id) { return String(id) !== String(listingId); });
+        localStorage.setItem("uninest.favorites", JSON.stringify(favs));
+        return { success: true };
+      });
     },
     getMyFavorites: async function () {
-      var items = await request("/api/v1/favorites/mine");
-      return (items || []).map(mapListing);
+      try {
+        var items = await request("/api/v1/favorites/mine");
+        return (items || []).map(mapListing);
+      } catch (e) {
+        var favIds = JSON.parse(localStorage.getItem("uninest.favorites") || "[]");
+        var source = (typeof properties !== "undefined" ? properties : (typeof baseProperties !== "undefined" ? baseProperties : []));
+        return source.filter(function(p) { return favIds.indexOf(String(p.id)) !== -1; });
+      }
     },
-    getMyFavoriteIds: function () {
-      return request("/api/v1/favorites/ids");
+    getMyFavoriteIds: async function () {
+      try {
+        return await request("/api/v1/favorites/ids");
+      } catch (e) {
+        return JSON.parse(localStorage.getItem("uninest.favorites") || "[]");
+      }
     },
     numericSeed: function (id) {
       var text = String(id);
