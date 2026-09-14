@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: uninest-api
+    env: dotnet
+    buildCommand: dotnet publish src/UniNest.Api/UniNest.Api.csproj -c Release -o out
+    startCommand: dotnet out/UniNest.Api.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Jwt__Secret
+        generateValue: true
