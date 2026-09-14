@@ -10,6 +10,8 @@
     }
   </script>
   <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     .listings-page { padding: 40px 0; }
 
@@ -24,15 +26,13 @@
       background: var(--white);
       border-radius: var(--radius);
       padding: 24px;
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 80px;
+      border: 1px solid var(--border);
     }
 
     .filters-panel h3 {
       font-size: 18px;
-      font-weight: 700;
       margin-bottom: 20px;
+      color: var(--primary);
     }
 
     .filter-group {
@@ -41,31 +41,28 @@
 
     .filter-group label {
       display: block;
+      font-size: 14px;
       font-weight: 600;
       margin-bottom: 8px;
-      font-size: 14px;
     }
 
+    .filter-group select,
     .filter-group input[type="range"] {
       width: 100%;
-      accent-color: var(--primary);
     }
 
     .price-display {
       font-size: 13px;
-      color: var(--primary);
-      font-weight: 600;
-      margin-top: 4px;
+      color: var(--text-light);
+      margin-top: 6px;
     }
 
     .filter-group select {
-      width: 100%;
       padding: 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 14px;
       outline: none;
-      cursor: pointer;
     }
 
     .checkbox-group {
@@ -85,7 +82,7 @@
     .search-top {
       display: flex;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .search-top input {
@@ -97,10 +94,38 @@
       outline: none;
     }
 
+    .view-toggle-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
     .results-count {
       font-size: 14px;
       color: var(--text-light);
-      margin-bottom: 16px;
+    }
+
+    .view-switch-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .view-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .view-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
     }
 
     .no-results {
@@ -176,7 +201,7 @@
           </button>
         </aside>
 
-        <!-- Listings Grid -->
+        <!-- Listings Content -->
         <div>
           <div class="search-top">
             <input type="text" id="searchInput"
@@ -184,7 +209,16 @@
               placeholder="Search by title or location..."
               oninput="applyFilters()"/>
           </div>
-          <div class="results-count" id="resultsCount"></div>
+
+          <div class="view-toggle-bar">
+            <div class="results-count" id="resultsCount">Loading properties...</div>
+            <div class="view-switch-btns">
+              <button class="view-btn active" id="btnGridView" onclick="switchView('grid')"><i class="fa-solid fa-border-all"></i> Cards</button>
+              <button class="view-btn" id="btnMapView" onclick="switchView('map')"><i class="fa-solid fa-map-location-dot"></i> Interactive Map</button>
+            </div>
+          </div>
+
+          <div id="listingsMap" style="height:520px; border-radius:12px; border:1px solid var(--border); display:none; margin-bottom:24px; position:relative;"></div>
           <div class="cards-grid" id="listingsGrid"></div>
         </div>
 
@@ -201,6 +235,7 @@
   <script src="js/lang.js"></script>
   <script src="js/data.js"></script>
   <script src="js/listings.js"></script>
+  <script src="js/chat.js"></script>
 
   <!-- Floating Contact Bar -->
   <div class="floating-bar">

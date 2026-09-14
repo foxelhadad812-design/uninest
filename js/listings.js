@@ -183,6 +183,88 @@ function renderListings(data) {
     html += "</div></div>";
   }
   grid.innerHTML = html;
+  if (_leafletMapInstance && document.getElementById("listingsMap").style.display !== "none") {
+    renderListingsMap(data);
+  }
+}
+
+var _leafletMapInstance = null;
+var _leafletMarkersGroup = null;
+
+function switchView(mode) {
+  var grid = document.getElementById("listingsGrid");
+  var mapContainer = document.getElementById("listingsMap");
+  var btnGrid = document.getElementById("btnGridView");
+  var btnMap = document.getElementById("btnMapView");
+
+  if (mode === "map") {
+    grid.style.display = "none";
+    mapContainer.style.display = "block";
+    if (btnGrid) btnGrid.classList.remove("active");
+    if (btnMap) btnMap.classList.add("active");
+    if (listingsData) {
+      setTimeout(function() {
+        renderListingsMap(listingsData);
+        if (_leafletMapInstance) _leafletMapInstance.invalidateSize();
+      }, 100);
+    }
+  } else {
+    grid.style.display = "grid";
+    mapContainer.style.display = "none";
+    if (btnGrid) btnGrid.classList.add("active");
+    if (btnMap) btnMap.classList.remove("active");
+  }
+}
+
+function renderListingsMap(data) {
+  if (!window.L || !document.getElementById("listingsMap")) return;
+
+  if (!_leafletMapInstance) {
+    _leafletMapInstance = L.map("listingsMap").setView([29.3084, 30.8428], 7);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(_leafletMapInstance);
+    _leafletMarkersGroup = L.layerGroup().addTo(_leafletMapInstance);
+  }
+
+  _leafletMarkersGroup.clearLayers();
+
+  var cityCoords = {
+    "Fayoum": [29.3084, 30.8428],
+    "Cairo": [30.0444, 31.2357],
+    "Giza": [30.0131, 31.2089],
+    "Alexandria": [31.2001, 29.9187],
+    "Mansoura": [31.0409, 31.3785],
+    "Zagazig": [30.5877, 31.5020]
+  };
+
+  var bounds = [];
+  for (var i = 0; i < data.length; i++) {
+    var p = data[i];
+    var seed = window.UniNestApi ? window.UniNestApi.numericSeed(p.id) : Number(p.id) || i;
+    var baseCoord = cityCoords[p.location] || [29.3084, 30.8428];
+    var lat = baseCoord[0] + ((seed % 40) - 20) * 0.003;
+    var lng = baseCoord[1] + ((seed % 30) - 15) * 0.003;
+
+    bounds.push([lat, lng]);
+
+    var popupHTML =
+      "<div style='width:180px; text-align:center; font-family:inherit;'>" +
+      "<img src='" + (p.image || "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80") + "' referrerpolicy='no-referrer' style='width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:6px;'/>" +
+      "<strong style='font-size:12px; display:block; margin-bottom:4px;'>" + (p.title || "Listing") + "</strong>" +
+      "<div style='font-weight:bold; color:#2196f3; font-size:13px; margin-bottom:6px;'>" + Number(p.price).toLocaleString() + " EGP/mo</div>" +
+      "<a href='details.html?id=" + p.id + "' style='display:inline-block; background:#2196f3; color:white; padding:4px 10px; border-radius:4px; text-decoration:none; font-size:11px; font-weight:bold;'>View Details</a>" +
+      "</div>";
+
+    L.marker([lat, lng])
+      .bindPopup(popupHTML)
+      .addTo(_leafletMarkersGroup);
+  }
+
+  if (bounds.length > 0) {
+    _leafletMapInstance.fitBounds(bounds, { padding: [30, 30] });
+  }
 }
 
 // جلب العقارات من الباكند وبناء الواجهة

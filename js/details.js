@@ -122,33 +122,45 @@ window.onload = async function() {
   // Build contact/action buttons — reverted to original hardcoded strings for missing translation keys
   var actionButtonsHTML = "";
   if (isGenderMismatch) {
-    var genderWord = property.gender === "female" ? "إناث" : "ذكور";
-    var genderWordEn = property.gender === "female" ? "Females" : "Males";
-    var errorTxt = lang === "ar" ? "❌ هذا السكن مخصص للـ (" + genderWord + ") فقط"
-      : "❌ This property is for " + genderWordEn + " only";
-    actionButtonsHTML = "<button class='contact-btn' style='background:#f8d7da; color:#721c24; cursor:not-allowed; border:none; width:100%; margin-top:20px;' disabled><b>" + errorTxt + "</b></button>";
-  } else {
-    actionButtonsHTML =
-      "<a href='tel:" + property.phone + "' class='contact-btn btn-call'><i class='fa-solid fa-phone'></i> Call</a>" +
-      "<button class='contact-btn' style='background:#27ae60; color:white;' onclick='showInquiryForm()'><i class='fa-solid fa-paper-plane'></i> Request Booking</button>" +
-      "<div id='inquiryFormContainer' style='display:none; margin-bottom:12px; background:var(--bg); padding:12px; border-radius:8px; text-align:left;'>" +
-      "<textarea id='inquiryMsgInput' placeholder='Send a message to owner...' style='width:100%; height:75px; border-radius:6px; border:1px solid var(--border); padding:8px; font-size:13px; font-family:inherit;'></textarea>" +
-      "<button class='contact-btn btn-call' style='margin-top:8px; margin-bottom:0;' onclick='sendInquiryMessage(\"" + String(property.id) + "\")'>Submit Request</button>" +
+  // Render user submitted reviews
+  var localReviews = JSON.parse(localStorage.getItem("uninest.userReviews." + property.id) || "[]");
+  var userReviewsHTML = "";
+  for (var ur = 0; ur < localReviews.length; ur++) {
+    var rev = localReviews[ur];
+    var rStars = "";
+    for (var st = 1; st <= 5; st++) {
+      rStars += st <= rev.rating ? "<span style='color:#f39c12; font-size:14px; margin-right:2px;'>★</span>" : "<span style='color:#ccc; font-size:14px; margin-right:2px;'>★</span>";
+    }
+    userReviewsHTML +=
+      "<div style='background:var(--white); padding:14px; border-radius:8px; margin-bottom:10px; border:1px solid var(--border);'>" +
+      "<div style='display:flex; justify-content:space-between; margin-bottom:4px;'>" +
+      "<strong>" + rev.userName + " <span style='background:#27ae60; color:white; padding:1px 6px; border-radius:10px; font-size:10px;'>Verified Student</span></strong>" +
+      "<span style='font-size:11px; color:var(--text-light);'>" + rev.date + "</span>" +
       "</div>" +
-      "<button class='contact-btn btn-favorite' onclick='addToFavorites(\"" + String(property.id) + "\")'><i class='fa-solid fa-heart'></i> " + window.t("favs") + "</button>" +
-      "<div class='discount-banner' style='margin-top:15px; padding:15px; background:rgba(33,150,243,0.1); border-radius:8px; border:1px dashed #2196f3; text-align:center;'>" +
-      "<div style='font-size:14px; font-weight:600; color:#1976d2; margin-bottom:8px;'>" + window.t("eeluPromo") + "</div>" +
-      "<button class='contact-btn' style='background:#1976d2; color:white; font-size:13px; margin:0;' onclick='showDiscountForm()'><i class='fa-solid fa-tag'></i> " + window.t("applyDiscountBtn") + "</button>" +
-      "</div>" +
-      "<div id='discountForm' style='display:none; margin-top:15px; background:var(--bg); padding:15px; border-radius:8px; font-size:13px;'>" +
-      "<p style='margin-bottom:15px; color:var(--text-light);'>" + window.t("discountModalDesc") + "</p>" +
-      "<label style='display:block; margin-bottom:6px; font-weight:600;'>" + window.t("uniIdLbl") + "</label>" +
-      "<input type='file' accept='image/*' style='margin-bottom:15px; width:100%; border:1px solid var(--border); padding:8px;'>" +
-      "<label style='display:block; margin-bottom:6px; font-weight:600;'>" + window.t("nidLbl") + "</label>" +
-      "<input type='file' accept='image/*' style='margin-bottom:15px; width:100%; border:1px solid var(--border); padding:8px;'>" +
-      "<button class='contact-btn btn-call' onclick='submitDiscountReq()'>" + window.t("btnSendReq") + "</button>" +
+      "<div style='margin-bottom:6px;'>" + rStars + "</div>" +
+      "<p style='font-size:13px; margin:0;'>" + rev.comment + "</p>" +
       "</div>";
   }
+
+  var addReviewFormHTML =
+    "<div style='margin-top:16px; background:var(--bg); padding:14px; border-radius:8px; border:1px solid var(--border);'>" +
+    "<h4 style='font-size:14px; margin-bottom:8px;'><i class='fa-solid fa-pen'></i> Write a Student Review</h4>" +
+    "<div style='display:flex; gap:10px; margin-bottom:8px; align-items:center;'>" +
+    "<span style='font-size:13px;'>Rating:</span>" +
+    "<select id='newReviewRating' style='padding:4px 8px; border-radius:6px; border:1px solid var(--border); font-size:13px;'>" +
+    "<option value='5'>⭐⭐⭐⭐⭐ (5/5 Exceptional)</option>" +
+    "<option value='4'>⭐⭐⭐⭐ (4/5 Very Good)</option>" +
+    "<option value='3'>⭐⭐⭐ (3/5 Good)</option>" +
+    "<option value='2'>⭐⭐ (2/5 Fair)</option>" +
+    "<option value='1'>⭐ (1/5 Poor)</option>" +
+    "</select>" +
+    "</div>" +
+    "<textarea id='newReviewComment' placeholder='Share your experience about location, landlord, internet...' style='width:100%; height:60px; border-radius:6px; border:1px solid var(--border); padding:8px; font-size:13px; font-family:inherit;'></textarea>" +
+    "<button onclick='submitStudentReview(\"" + property.id + "\")' class='contact-btn' style='margin-top:8px; width:auto; padding:6px 16px; font-size:12px; background:var(--primary); color:white;'>Submit Review</button>" +
+    "</div>";
+
+  actionButtonsHTML +=
+    "<button class='contact-btn' style='background:#f39c12; color:white; font-weight:700; margin-top:10px;' onclick='showPaymentModal(\"" + property.id + "\", \"" + tTitle.replace(/'/g, "") + "\", " + property.price + ")'><i class='fa-solid fa-shield-halved'></i> Reserve Now with Deposit</button>";
 
   var fallbackImg = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=80";
   var mainImg = property.image || fallbackImg;
@@ -186,7 +198,9 @@ window.onload = async function() {
     "</div>" +
     "<div class='details-section'>" +
     "<h3><i class='fa-solid fa-star' style='color:#f39c12'></i> " + window.t("studentReviews") + "</h3>" +
+    userReviewsHTML +
     htmlReviews +
+    addReviewFormHTML +
     "</div>" +
     "</div>" +
     "<div>" +
@@ -219,6 +233,100 @@ window.onload = async function() {
         .openPopup();
     }
   }, 200);
+};
+
+// Student review submission handler
+window.submitStudentReview = function(propId) {
+  var user = JSON.parse(localStorage.getItem("currentUser") || "null");
+  if (!user) {
+    alert("Please log in to submit a review!");
+    window.location.href = "login.html";
+    return;
+  }
+  var rating = parseInt(document.getElementById("newReviewRating").value, 10);
+  var comment = document.getElementById("newReviewComment").value.trim();
+  if (!comment) {
+    alert("Please enter a review comment.");
+    return;
+  }
+
+  var localReviews = JSON.parse(localStorage.getItem("uninest.userReviews." + propId) || "[]");
+  localReviews.unshift({
+    userName: user.name,
+    rating: rating,
+    comment: comment,
+    date: "Just now"
+  });
+  localStorage.setItem("uninest.userReviews." + propId, JSON.stringify(localReviews));
+  alert("Thank you! Your review has been published ⭐");
+  window.location.reload();
+};
+
+// Payment simulation modal
+window.showPaymentModal = function(propId, title, price) {
+  var user = JSON.parse(localStorage.getItem("currentUser") || "null");
+  if (!user) {
+    alert("Please log in first to reserve this property!");
+    window.location.href = "login.html";
+    return;
+  }
+
+  var depositAmount = Math.round(price * 0.2); // 20% deposit
+
+  var modalHTML =
+    "<div id='paymentModalOverlay' style='position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; display:flex; align-items:center; justify-content:center; padding:16px;'>" +
+    "<div style='background:white; border-radius:12px; width:100%; max-width:440px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); font-family:inherit; position:relative;'>" +
+    "<button onclick='closePaymentModal()' style='position:absolute; top:16px; right:16px; background:none; border:none; font-size:20px; cursor:pointer;'>✕</button>" +
+    "<h3 style='margin-bottom:6px; color:#1976d2;'><i class='fa-solid fa-lock'></i> Secure Booking Deposit</h3>" +
+    "<p style='font-size:13px; color:#666; margin-bottom:16px;'>" + title + "</p>" +
+    "<div style='background:#f8f9fa; padding:12px; border-radius:8px; margin-bottom:16px; font-size:13px; border:1px solid #e0e0e0;'>" +
+    "<div style='display:flex; justify-content:space-between; margin-bottom:4px;'><span>Monthly Rent:</span><strong>" + Number(price).toLocaleString() + " EGP</strong></div>" +
+    "<div style='display:flex; justify-content:space-between; color:#27ae60; font-size:14px; font-weight:bold;'><span>Reservation Deposit (20%):</span><span>" + Number(depositAmount).toLocaleString() + " EGP</span></div>" +
+    "</div>" +
+    "<label style='display:block; font-size:13px; font-weight:600; margin-bottom:6px;'>Select Payment Method:</label>" +
+    "<select id='payMethodSelect' style='width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; font-size:13px; margin-bottom:14px;'>" +
+    "<option value='Vodafone Cash'>📱 Vodafone Cash / Orange Cash</option>" +
+    "<option value='InstaPay'>⚡ InstaPay Egypt</option>" +
+    "<option value='Visa/MasterCard'>💳 Credit / Debit Card (Visa / MasterCard)</option>" +
+    "<option value='Meeza'>🇪🇬 Meeza National Card</option>" +
+    "</select>" +
+    "<label style='display:block; font-size:13px; font-weight:600; margin-bottom:6px;'>Mobile / Card Number:</label>" +
+    "<input type='text' id='payAccountNum' placeholder='e.g. 01012345678 or 4111...' style='width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; font-size:13px; margin-bottom:16px;' value='01099887766'/>" +
+    "<button onclick='processPayment(\"" + propId + "\", \"" + title + "\", " + depositAmount + ")' style='width:100%; background:#27ae60; color:white; padding:12px; border:none; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer;'>Pay Deposit & Reserve</button>" +
+    "</div></div>";
+
+  var div = document.createElement("div");
+  div.id = "paymentModalContainer";
+  div.innerHTML = modalHTML;
+  document.body.appendChild(div);
+};
+
+window.closePaymentModal = function() {
+  var c = document.getElementById("paymentModalContainer");
+  if (c) c.remove();
+};
+
+window.processPayment = function(propId, title, amount) {
+  var user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  var method = document.getElementById("payMethodSelect").value;
+  var refNum = "UN-" + Math.floor(100000 + Math.random() * 900000);
+
+  var overlay = document.getElementById("paymentModalOverlay");
+  if (overlay) {
+    overlay.innerHTML =
+      "<div style='background:white; border-radius:12px; width:100%; max-width:440px; padding:28px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); font-family:inherit;'>" +
+      "<div style='font-size:48px; color:#27ae60; margin-bottom:12px;'>🎉</div>" +
+      "<h2 style='color:#27ae60; font-size:20px; margin-bottom:8px;'>Booking Confirmed!</h2>" +
+      "<p style='font-size:13px; color:#666; margin-bottom:16px;'>Your deposit of <strong>" + Number(amount).toLocaleString() + " EGP</strong> was received via " + method + ".</p>" +
+      "<div style='background:#f8f9fa; padding:14px; border-radius:8px; font-size:13px; text-align:left; border:1px solid #e0e0e0; margin-bottom:16px;'>" +
+      "<div><strong>Receipt No:</strong> " + refNum + "</div>" +
+      "<div><strong>Student:</strong> " + user.name + " (" + user.email + ")</div>" +
+      "<div><strong>Property:</strong> " + title + "</div>" +
+      "<div><strong>Date:</strong> " + new Date().toLocaleDateString() + "</div>" +
+      "</div>" +
+      "<button onclick='closePaymentModal()' style='background:#2196f3; color:white; border:none; padding:10px 24px; border-radius:6px; font-weight:bold; cursor:pointer;'>Done & Return</button>" +
+      "</div>";
+  }
 };
 
 // Favorites management (real API integration)

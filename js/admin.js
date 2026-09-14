@@ -116,16 +116,16 @@
     clearError();
 
     try {
-      var result = await window.UniNestApi.request("/api/v1/listings?take=50");
-      var items = result.items || result || [];
+      var items = [];
+      try {
+        var result = await window.UniNestApi.request("/api/v1/listings?take=50");
+        items = result.items || result || [];
+      } catch (err) {
+        console.warn("Admin API unavailable, using local dataset fallback:", err);
+      }
 
       if (!items || items.length === 0) {
-        tbody.innerHTML =
-          "<tr><td colspan='8' style='padding:30px; text-align:center; color:var(--text-light);'>No property listings found.</td></tr>";
-        el("statPending").textContent = "0";
-        el("statPublished").textContent = "0";
-        el("statArchived").textContent = "0";
-        return null;
+        items = (typeof properties !== "undefined" ? properties : (typeof baseProperties !== "undefined" ? baseProperties : []));
       }
 
       // Count by status
