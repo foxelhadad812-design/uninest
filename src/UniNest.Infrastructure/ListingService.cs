@@ -398,12 +398,17 @@ public sealed class ListingService(UniNestDbContext db, UserManager<AppUser> use
             .Where(l => locationIds.Contains(l.Id))
             .ToDictionaryAsync(l => l.Id, cancellationToken);
 
-        var primaryImages = await (
+        var primaryImageRows = await (
             from img in db.ListingImages.AsNoTracking()
             join asset in db.MediaAssets.AsNoTracking() on img.MediaAssetId equals asset.Id
             where listingIds.Contains(img.ListingId) && img.DeletedAt == null && asset.DeletedAt == null && img.IsPrimary
-            select new { img.ListingId, StorageKey = "/" + asset.StorageKey.TrimStart('/') }
-        ).ToDictionaryAsync(x => x.ListingId, x => x.StorageKey, cancellationToken);
+            select new { img.ListingId, asset.StorageKey }
+        ).ToListAsync(cancellationToken);
+
+        var primaryImages = primaryImageRows.ToDictionary(
+            x => x.ListingId,
+            x => FormatStorageKey(x.StorageKey)
+        );
 
         var amenityRows = await (
             from link in db.ListingAmenities.AsNoTracking()
@@ -534,28 +539,28 @@ public sealed class ListingService(UniNestDbContext db, UserManager<AppUser> use
         db.ListingImages.Add(listingImage);
         await db.SaveChangesAsync(cancellationToken);
 
-        var imageUrl = "/" + asset.StorageKey.TrimStart('/');
+        var imageUrl = FormatStorageKey(asset.StorageKey);
         return new ListingImageDto(listingImage.Id, listingId, request.MediaAssetId, imageUrl, isPrimary, sortOrder);
     }
 
     public async Task<IReadOnlyList<ListingImageDto>> GetImagesAsync(Guid listingId, CancellationToken cancellationToken = default)
     {
-        var images = await (
+        var rawImages = await (
             from img in db.ListingImages.AsNoTracking()
             join asset in db.MediaAssets.AsNoTracking() on img.MediaAssetId equals asset.Id
             where img.ListingId == listingId && img.DeletedAt == null && asset.DeletedAt == null
             orderby img.IsPrimary descending, img.SortOrder ascending, img.CreatedAt ascending
-            select new ListingImageDto(
-                img.Id,
-                img.ListingId,
-                img.MediaAssetId,
-                "/" + asset.StorageKey.TrimStart('/'),
-                img.IsPrimary,
-                img.SortOrder
-            )
+            select new { img.Id, img.ListingId, img.MediaAssetId, asset.StorageKey, img.IsPrimary, img.SortOrder }
         ).ToListAsync(cancellationToken);
 
-        return images;
+        return rawImages.Select(img => new ListingImageDto(
+            img.Id,
+            img.ListingId,
+            img.MediaAssetId,
+            FormatStorageKey(img.StorageKey),
+            img.IsPrimary,
+            img.SortOrder
+        )).ToList();
     }
 
     public async Task<bool> RemoveImageAsync(Guid ownerUserId, Guid listingId, Guid imageId, CancellationToken cancellationToken = default)
@@ -646,6 +651,18 @@ public sealed class ListingService(UniNestDbContext db, UserManager<AppUser> use
         if (contactPhone is { Length: > 30 })
             return "Contact phone is too long.";
         return null;
+    }
+
+    private static string FormatStorageKey(string? key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return "";
+        key = key.Trim();
+        if (key.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            key.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            return key;
+        }
+        return "/" + key.TrimStart('/');
     }
 
     private static string? TrimToNull(string? value) =>

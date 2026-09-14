@@ -64,8 +64,13 @@
     });
 
     var imgUrl = dto.primaryImageUrl || PLACEHOLDER_IMAGE;
-    if (imgUrl && imgUrl.indexOf("http") !== 0 && imgUrl.indexOf("/") === 0) {
-      imgUrl = apiBase() + imgUrl;
+    if (imgUrl && typeof imgUrl === "string") {
+      imgUrl = imgUrl.trim();
+      if (imgUrl.indexOf("/http://") === 0 || imgUrl.indexOf("/https://") === 0) {
+        imgUrl = imgUrl.substring(1);
+      } else if (imgUrl.indexOf("http") !== 0 && imgUrl.indexOf("/") === 0) {
+        imgUrl = apiBase() + imgUrl;
+      }
     }
 
     return {

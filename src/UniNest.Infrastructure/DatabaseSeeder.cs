@@ -211,12 +211,16 @@ public static class DatabaseSeeder
             foreach (var code in item.Amenities)
             {
                 if (!amenities.TryGetValue(code, out var amenity)) continue;
-                db.ListingAmenities.Add(new ListingAmenity
+                var hasAmenity = await db.ListingAmenities.AnyAsync(la => la.ListingId == listing.Id && la.AmenityId == amenity.Id);
+                if (!hasAmenity)
                 {
-                    ListingId = listing.Id,
-                    AmenityId = amenity.Id,
-                    CreatedAt = now
-                });
+                    db.ListingAmenities.Add(new ListingAmenity
+                    {
+                        ListingId = listing.Id,
+                        AmenityId = amenity.Id,
+                        CreatedAt = now
+                    });
+                }
             }
         }
 
