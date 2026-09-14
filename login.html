@@ -345,7 +345,7 @@
         var toast = document.getElementById('authToast');
         // بنحدد اللغة عشان نكتب الرسالة صح عربي ولا إنجليزي
         var lang = localStorage.getItem("lang") || "en";
-        toast.innerText = lang === "ar" ? "يرجى تسجيل الدخول أولاً لتتمكن من تصفح العقارات المتاحة 🏠" : "Please login first to browse available properties 🏠";
+        toast.innerText = lang === "ar" ? "يرجى تسجيل الدخول أو إنشاء حساب جديد أولاً لمشاهدة تفاصيل السكن 🏠" : "Please login or create an account first to view property details 🏠";
         toast.style.display = "block";
         window.history.replaceState({}, document.title, window.location.pathname);
         setTimeout(function() {
