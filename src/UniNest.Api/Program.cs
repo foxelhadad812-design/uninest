@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.RateLimiting;
@@ -164,7 +165,18 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("EnableS
     app.UseSwaggerUI();
 }
 
-app.UseStaticFiles();
+var parentDir = Directory.GetParent(builder.Environment.ContentRootPath)?.Parent?.FullName ?? builder.Environment.ContentRootPath;
+var wwwrootDir = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+Directory.CreateDirectory(wwwrootDir);
+
+var compositeProvider = new Microsoft.Extensions.FileProviders.CompositeFileProvider(
+    new Microsoft.Extensions.FileProviders.PhysicalFileProvider(wwwrootDir),
+    new Microsoft.Extensions.FileProviders.PhysicalFileProvider(parentDir)
+);
+
+app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = compositeProvider });
+app.UseStaticFiles(new StaticFileOptions { FileProvider = compositeProvider });
+
 app.UseCors();
 app.UseRateLimiter();
 app.UseAuthentication();
