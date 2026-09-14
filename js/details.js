@@ -156,10 +156,13 @@ window.onload = async function() {
       "</div>";
   }
 
+  var fallbackImg = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=80";
+  var mainImg = property.image || fallbackImg;
+
   content.innerHTML =
     "<div class='details-layout'>" +
     "<div>" +
-    "<img src='" + property.image + "' alt='" + property.title + "' class='details-img'/>" +
+    "<img src='" + mainImg + "' alt='" + tTitle + "' class='details-img' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\"/>" +
     "<h1 class='details-title'>" + tTitle + "</h1>" +
     "<div class='details-price' style='display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;'>" +
     "<span>" + property.price + " " + window.t("egpMonth") + "</span>" +
