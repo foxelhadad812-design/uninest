@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script>
     if (!localStorage.getItem("currentUser") || localStorage.getItem("currentUser") === "null") {
-      window.location.replace("login.html?reason=auth_required");
+      document.documentElement.style.display = "none";
+      var params = new URLSearchParams(window.location.search);
+      var target = "details.html" + (params.get("id") ? "?id=" + encodeURIComponent(params.get("id")) : "");
+      window.location.replace("login.html?reason=auth_required&returnUrl=" + encodeURIComponent(target));
     }
   </script>
   <link rel="stylesheet" href="css/style.css"/>

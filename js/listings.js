@@ -179,7 +179,7 @@ function renderListings(data) {
     html += "<div class='card-price' style='font-weight:700; color:var(--primary); font-size:18px; margin-bottom:6px;'>" + Number(p.price).toLocaleString() + " " + window.t("egpMonth") + "</div>";
     html += "<div class='card-location' style='font-size:13px; color:var(--text-light); margin-bottom:8px;'><i class='fa-solid fa-location-dot'></i> " + tLoc + "</div>";
     html += "<p style='font-size:13px;margin-bottom:12px; color:var(--text);'><i class='fa-solid fa-door-open'></i> " + p.rooms + " " + window.t("roomsWord") + " · <i class='fa-solid fa-layer-group'></i> " + tType + "</p>";
-    html += "<a href='details.html?id=" + p.id + "' class='btn btn-primary' style='width:100%; text-align:center; padding:10px; border-radius:8px; display:inline-block; text-decoration:none;'>" + window.t("btnView") + "</a>";
+    html += "<a href='#' onclick='event.preventDefault(); goToDetails(\"" + p.id + "\")' class='btn btn-primary' style='width:100%; text-align:center; padding:10px; border-radius:8px; display:inline-block; text-decoration:none;'>" + window.t("btnView") + "</a>";
     html += "</div></div>";
   }
   grid.innerHTML = html;
@@ -254,7 +254,7 @@ function renderListingsMap(data) {
       "<img src='" + (p.image || "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80") + "' referrerpolicy='no-referrer' style='width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:6px;'/>" +
       "<strong style='font-size:12px; display:block; margin-bottom:4px;'>" + (p.title || "Listing") + "</strong>" +
       "<div style='font-weight:bold; color:#2196f3; font-size:13px; margin-bottom:6px;'>" + Number(p.price).toLocaleString() + " EGP/mo</div>" +
-      "<a href='details.html?id=" + p.id + "' style='display:inline-block; background:#2196f3; color:white; padding:4px 10px; border-radius:4px; text-decoration:none; font-size:11px; font-weight:bold;'>View Details</a>" +
+      "<a href='#' onclick='event.preventDefault(); goToDetails(\"" + p.id + "\")' style='display:inline-block; background:#2196f3; color:white; padding:4px 10px; border-radius:4px; text-decoration:none; font-size:11px; font-weight:bold;'>View Details</a>" +
       "</div>";
 
     L.marker([lat, lng])

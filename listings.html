@@ -6,7 +6,8 @@
   <title>UniNest – Listings</title>
   <script>
     if (!localStorage.getItem("currentUser") || localStorage.getItem("currentUser") === "null") {
-      window.location.replace("login.html?reason=auth_required");
+      document.documentElement.style.display = "none";
+      window.location.replace("login.html?reason=auth_required&returnUrl=" + encodeURIComponent("listings.html"));
     }
   </script>
   <link rel="stylesheet" href="css/style.css"/>

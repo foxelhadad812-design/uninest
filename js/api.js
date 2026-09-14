@@ -464,4 +464,15 @@
   };
 
   global.UniNestApi = api;
+
+  global.goToDetails = function (pId) {
+    var userRaw = localStorage.getItem("currentUser");
+    var user = (userRaw && userRaw !== "null") ? JSON.parse(userRaw) : null;
+    if (!user) {
+      var target = "details.html?id=" + encodeURIComponent(pId);
+      window.location.href = "login.html?reason=auth_required&returnUrl=" + encodeURIComponent(target);
+    } else {
+      window.location.href = "details.html?id=" + encodeURIComponent(pId);
+    }
+  };
 })(window);

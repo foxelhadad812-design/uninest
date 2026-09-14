@@ -63,7 +63,7 @@ async function displayFeaturedListings() {
       html += "<div class='card-price' style='font-weight:700; color:var(--primary); font-size:18px; margin-bottom:6px;'>" + priceDisplay + " " + egpText + "</div>";
       html += "<div class='card-location' style='font-size:13px; color:var(--text-light); margin-bottom:8px;'><i class='fa-solid fa-location-dot'></i> " + tLoc + "</div>";
       html += "<p style='font-size:13px; margin-bottom:12px; color:var(--text);'><i class='fa-solid fa-door-open'></i> " + (p.rooms || 2) + " " + rmsText + " · <i class='fa-solid fa-layer-group'></i> " + tType + "</p>";
-      html += "<a href='details.html?id=" + pId + "' class='btn btn-primary' style='width:100%; text-align:center; padding:10px; border-radius:8px; display:inline-block; text-decoration:none;'>" + viewText + "</a>";
+      html += "<a href='#' onclick='event.preventDefault(); goToDetails(\"" + pId + "\")' class='btn btn-primary' style='width:100%; text-align:center; padding:10px; border-radius:8px; display:inline-block; text-decoration:none;'>" + viewText + "</a>";
       html += "</div></div>";
     }
   } catch (renderErr) {

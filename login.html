@@ -402,7 +402,8 @@
           // api.js عمل saveSession() جوا الدالة دي بالفعل
           successMsg.style.display = "block";
           setTimeout(function () {
-            window.location.href = "profile.html";
+            var rUrl = new URLSearchParams(window.location.search).get("returnUrl");
+            window.location.href = rUrl ? decodeURIComponent(rUrl) : "profile.html";
           }, 1500);
         }).catch(function (err) {
           btn.disabled = false;
@@ -488,7 +489,8 @@
         .then(function () {
           successMsg.style.display = "block";
           setTimeout(function () {
-            window.location.href = "profile.html";
+            var rUrl = new URLSearchParams(window.location.search).get("returnUrl");
+            window.location.href = rUrl ? decodeURIComponent(rUrl) : "profile.html";
           }, 1500);
         })
         .catch(function (err) {

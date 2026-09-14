@@ -359,7 +359,7 @@
                 "<div class='mini-card-title'>" + p.title + "</div>" +
                 "<div class='mini-card-price'>" + p.price + " " + window.t('egpMonth') + "</div>" +
               "</div>" +
-              "<a href='details.html?id=" + p.id + "' class='mini-card-btn'>" + window.t('btnView') + "</a>" +
+              "<a href='#' onclick='event.preventDefault(); goToDetails(\"" + p.id + "\")' class='mini-card-btn'>" + window.t('btnView') + "</a>" +
             "</div>";
         }
       }
