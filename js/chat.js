@@ -77,6 +77,16 @@
       saveChats(chats);
     }
 
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     var html = "";
     for (var i = 0; i < chats.length; i++) {
       var msg = chats[i];
@@ -85,9 +95,9 @@
 
       html +=
         "<div style='max-width:80%; padding:8px 12px; border-radius:12px; font-size:13px; " + align + "'>" +
-          "<div style='font-size:10px; opacity:0.8; margin-bottom:2px; font-weight:bold;'>" + msg.sender + "</div>" +
-          "<div>" + msg.text + "</div>" +
-          "<div style='font-size:9px; opacity:0.7; text-align:right; margin-top:2px;'>" + (msg.time || "") + "</div>" +
+          "<div style='font-size:10px; opacity:0.8; margin-bottom:2px; font-weight:bold;'>" + escapeHtml(msg.sender) + "</div>" +
+          "<div>" + escapeHtml(msg.text) + "</div>" +
+          "<div style='font-size:9px; opacity:0.7; text-align:right; margin-top:2px;'>" + escapeHtml(msg.time || "") + "</div>" +
         "</div>";
     }
     chatBody.innerHTML = html;

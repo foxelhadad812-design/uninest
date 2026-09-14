@@ -122,6 +122,11 @@ window.onload = async function() {
   // Build contact/action buttons — reverted to original hardcoded strings for missing translation keys
   var actionButtonsHTML = "";
   if (isGenderMismatch) {
+  function escapeStr(s) {
+    if (!s) return "";
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
   // Render user submitted reviews
   var localReviews = JSON.parse(localStorage.getItem("uninest.userReviews." + property.id) || "[]");
   var userReviewsHTML = "";
@@ -134,11 +139,11 @@ window.onload = async function() {
     userReviewsHTML +=
       "<div style='background:var(--white); padding:14px; border-radius:8px; margin-bottom:10px; border:1px solid var(--border);'>" +
       "<div style='display:flex; justify-content:space-between; margin-bottom:4px;'>" +
-      "<strong>" + rev.userName + " <span style='background:#27ae60; color:white; padding:1px 6px; border-radius:10px; font-size:10px;'>Verified Student</span></strong>" +
-      "<span style='font-size:11px; color:var(--text-light);'>" + rev.date + "</span>" +
+      "<strong>" + escapeStr(rev.userName) + " <span style='background:#27ae60; color:white; padding:1px 6px; border-radius:10px; font-size:10px;'>Verified Student</span></strong>" +
+      "<span style='font-size:11px; color:var(--text-light);'>" + escapeStr(rev.date) + "</span>" +
       "</div>" +
       "<div style='margin-bottom:6px;'>" + rStars + "</div>" +
-      "<p style='font-size:13px; margin:0;'>" + rev.comment + "</p>" +
+      "<p style='font-size:13px; margin:0;'>" + escapeStr(rev.comment) + "</p>" +
       "</div>";
   }
 
