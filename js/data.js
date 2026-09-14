@@ -8,7 +8,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "apartment",
     rooms: 2,
-    image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400",
+    image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
     description: "Spacious apartment near Fayoum University, fully furnished, quiet neighborhood.", desc_ar: "شقة واسعة بالقرب من جامعة الفيوم، مفروشة بالكامل، في حي هادئ.",
     amenities: ["Wi-Fi", "Air Conditioning", "Kitchen"],
     owner: "Moamen hamouda", phone: "01007272508"
@@ -21,7 +21,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "single",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400",
+    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
     description: "Cozy single room, 10 minutes from EELU Fayoum branch, all utilities included.", desc_ar: "غرفة مفردة مريحة، على بعد 10 دقائق من فرع الجامعة الأهلية بالفيوم، شاملة كل المرافق.",
     amenities: ["Wi-Fi", "Kitchen"],
     owner: "Ziad Ahmed", phone: "01012557656"
@@ -34,7 +34,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400",
+    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
     description: "Affordable shared room for students, close to transportation and markets.", desc_ar: "غرفة مشتركة بأسعار اقتصادية للطلاب، قريبة من المواصلات والأسواق.",
     amenities: ["Wi-Fi", "Washing Machine"],
     owner: "Mohamed Hassan", phone: "01009229692"
@@ -46,7 +46,7 @@ let baseProperties = [
     location: "Cairo", location_ar: "القاهرة",
     type: "apartment",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400",
+    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
     description: "Modern studio apartment, fully furnished, 5 minutes from Cairo University.", desc_ar: "شقة استوديو حديثة مفروشة بالكامل، على بعد 5 دقائق من جامعة القاهرة.",
     amenities: ["Wi-Fi", "Air Conditioning", "Kitchen", "Parking"],
     owner: "Ammar Khaled", phone: "01066805363"
@@ -58,7 +58,7 @@ let baseProperties = [
     location: "Cairo", location_ar: "القاهرة",
     type: "apartment",
     rooms: 3,
-    image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400",
+    image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
     description: "Large 3-bedroom apartment, perfect for students looking for roommates.", desc_ar: "شقة واسعة بـ 3 غرف نوم، مثالية لطلاب يبحثون عن سكن مشترك.",
     amenities: ["Wi-Fi", "Kitchen", "Air Conditioning"],
     owner: "Abdullah Ashraf", phone: "01016714122"
@@ -70,7 +70,7 @@ let baseProperties = [
     location: "Alexandria", location_ar: "الإسكندرية",
     type: "single",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400",
+    image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80",
     description: "Clean and quiet single room near Alexandria University campus.", desc_ar: "غرفة مفردة نظيفة وهادئة بالقرب من حرم جامعة الإسكندرية.",
     amenities: ["Wi-Fi", "Kitchen"],
     owner: "Mohamed Ragab", phone: "01032894477"
@@ -82,7 +82,7 @@ let baseProperties = [
     location: "Mansoura", location_ar: "المنصورة",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400",
+    image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?auto=format&fit=crop&w=800&q=80",
     description: "Budget-friendly shared room, close to Mansoura University and public transport.", desc_ar: "غرفة مشتركة بأسعار اقتصادية، قريبة من جامعة المنصورة ووسائل النقل العام.",
     amenities: ["Wi-Fi", "Washing Machine", "Kitchen"],
     owner: "Nader Sayed", phone: "01061825930"
@@ -94,7 +94,7 @@ let baseProperties = [
     location: "Zagazig", location_ar: "الزقازيق",
     type: "apartment",
     rooms: 2,
-    image: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=400",
+    image: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?auto=format&fit=crop&w=800&q=80",
     description: "Comfortable 2-bedroom apartment near Zagazig University, fully furnished.", desc_ar: "شقة مريحة بـ 2 غرفة نوم بالقرب من جامعة الزقازيق، مفروشة بالكامل.",
     amenities: ["Wi-Fi", "Air Conditioning", "Kitchen"],
     owner: "Hossam Hassan", phone: "01124242930"
@@ -106,7 +106,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "apartment",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1499955085172-a104c9463ece?w=400",
+    image: "https://images.unsplash.com/photo-1499955085172-a104c9463ece?auto=format&fit=crop&w=800&q=80",
     description: "A newly renovated premium studio with fast internet, ideal for dedicated students.", desc_ar: "استوديو مجدد بالكامل بإنترنت سريع، مثالي للطلاب.",
     amenities: ["Wi-Fi", "Air Conditioning", "Kitchen", "Smart TV"],
     owner: "Kareem Tarek", phone: "01234567890"
@@ -118,7 +118,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "single",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400",
+    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
     description: "Quiet and well-lit single room in a peaceful area near the stadium.", desc_ar: "غرفة مفردة هادئة ومضيئة في منطقة قريبة من الاستاد.",
     amenities: ["Wi-Fi", "Balcony"],
     owner: "Mahmoud Ezzat", phone: "01001122334"
@@ -130,7 +130,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "shared",
     rooms: 2,
-    image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400",
+    image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
     description: "Share this lovely apartment with fellow students just steps away from EELU.", desc_ar: "شارك هذه الشقة اللطيفة مع زملائك على بعد خطوات من الجامعة الأهلية.",
     amenities: ["Washing Machine", "Kitchen"],
     owner: "Youssef Ibrahim", phone: "01112233445"
@@ -142,7 +142,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "apartment",
     rooms: 3,
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
     description: "Large furnished flat close to the train station for easy commuting.", desc_ar: "شقة مفروشة واسعة قريبة من محطة القطار لسهولة التنقل.",
     amenities: ["Air Conditioning", "Wi-Fi", "Elevator"],
     owner: "Sayed Fathy", phone: "01099887766"
@@ -155,7 +155,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=400",
+    image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=80",
     description: "Safe and secure room for female students, all bills included.", desc_ar: "غرفة آمنة ومريحة للطالبات، السعر شامل الفواتير.",
     amenities: ["Wi-Fi", "Kitchen", "Security"],
     owner: "Noha Adel", phone: "01200112233"
@@ -167,7 +167,7 @@ let baseProperties = [
     location: "Cairo", location_ar: "القاهرة",
     type: "apartment",
     rooms: 2,
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400",
+    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
     description: "Luxury apartment with Nile view, suitable for international students.", desc_ar: "شقة فاخرة تطل على النيل، مناسبة للطلاب الدوليين.",
     amenities: ["Wi-Fi", "Pool", "Gym", "Air Conditioning"],
     owner: "Omar Tarek", phone: "01144556677"
@@ -180,7 +180,7 @@ let baseProperties = [
     location: "Giza", location_ar: "الجيزة",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=400",
+    image: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=800&q=80",
     description: "Bed in a shared room, very close to Giza square and metro station.", desc_ar: "سرير في غرفة مشتركة، قريبة جداً من ميدان الجيزة ومحطة المترو.",
     amenities: ["Wi-Fi", "Washing Machine"],
     owner: "Adel Imam", phone: "01033445566"
@@ -192,7 +192,7 @@ let baseProperties = [
     location: "Alexandria", location_ar: "الإسكندرية",
     type: "apartment",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400",
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
     description: "Beautifully designed studio in Smouha, Alexandria. Perfect for living alone.", desc_ar: "استوديو بتصميم جميل في سموحة، الإسكندرية. مثالي للعيش المستقل.",
     amenities: ["Wi-Fi", "Air Conditioning", "Balcony"],
     owner: "Tamer Hosny", phone: "01255667788"
@@ -204,7 +204,7 @@ let baseProperties = [
     location: "Alexandria", location_ar: "الإسكندرية",
     type: "single",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=400",
+    image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=80",
     description: "Sea view single room, close to Arab Academy.", desc_ar: "غرفة مفردة بإطلالة على البحر، قريبة من الأكاديمية العربية.",
     amenities: ["Wi-Fi", "Kitchen"],
     owner: "Sara Ahmed", phone: "01166778899"
@@ -216,7 +216,7 @@ let baseProperties = [
     location: "Cairo", location_ar: "القاهرة",
     type: "apartment",
     rooms: 4,
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400",
+    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
     description: "Spacious 4-bedroom apartment next to AUC campus. Perfect to share.", desc_ar: "شقة واسعة بـ 4 غرف نوم بجوار حرم الجامعة الأمريكية. مثالية للمشاركة.",
     amenities: ["Wi-Fi", "Air Conditioning", "Kitchen", "Gym", "Pool"],
     owner: "Khaled Youssef", phone: "01077889900"
@@ -229,7 +229,7 @@ let baseProperties = [
     location: "Mansoura", location_ar: "المنصورة",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400",
+    image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80",
     description: "Affordable bed in a double room for female students in Mansoura.", desc_ar: "سرير اقتصادي في غرفة مزدوجة للطالبات في المنصورة.",
     amenities: ["Wi-Fi", "Washing Machine"],
     owner: "Mai Ezzat", phone: "01288990011"
@@ -241,7 +241,7 @@ let baseProperties = [
     location: "Tanta", location_ar: "طنطا",
     type: "apartment",
     rooms: 2,
-    image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400",
+    image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
     description: "Close to Tanta University, newly painted and furnished.", desc_ar: "قريبة من جامعة طنطا، مجددة ومفروشة حديثاً.",
     amenities: ["Wi-Fi", "Kitchen"],
     owner: "Ali Fawzy", phone: "01099001122"
@@ -253,7 +253,7 @@ let baseProperties = [
     location: "Assiut", location_ar: "أسيوط",
     type: "single",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1542889601-399c4f3a8402?w=400",
+    image: "https://images.unsplash.com/photo-1542889601-399c4f3a8402?auto=format&fit=crop&w=800&q=80",
     description: "Quiet room located in central Assiut, ideal for studying.", desc_ar: "غرفة هادئة في وسط أسيوط، مثالية للمذاكرة.",
     amenities: ["Wi-Fi", "Balcony"],
     owner: "Kamal Hassan", phone: "01100112233"
@@ -265,7 +265,7 @@ let baseProperties = [
     location: "Minya", location_ar: "المنيا",
     type: "apartment",
     rooms: 3,
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400",
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
     description: "Gorgeous apartment overlooking the Nile in Minya city.", desc_ar: "شقة رائعة تطل على النيل في مدينة المنيا.",
     amenities: ["Wi-Fi", "Air Conditioning", "Kitchen"],
     owner: "Hanan Fathy", phone: "01211223344"
@@ -277,7 +277,7 @@ let baseProperties = [
     location: "Ismailia", location_ar: "الإسماعيلية",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=400",
+    image: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=800&q=80",
     description: "Great location in Ismailia, very close to the university campus.", desc_ar: "موقع استثنائي في الإسماعيلية، قريب جداً من الحرم الجامعي.",
     amenities: ["Washing Machine", "Kitchen"],
     owner: "Mostafa Kamel", phone: "01022334455"
@@ -289,7 +289,7 @@ let baseProperties = [
     location: "Banha", location_ar: "بنها",
     type: "apartment",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400",
+    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
     description: "Well equipped modern studio near Banha University gates.", desc_ar: "استوديو حديث مجهز بالكامل بالقرب من بوابات جامعة بنها.",
     amenities: ["Wi-Fi", "Air Conditioning"],
     owner: "Dina Sayed", phone: "01133445566"
@@ -301,7 +301,7 @@ let baseProperties = [
     location: "Shibin El Kom", location_ar: "شبين الكوم",
     type: "single",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400",
+    image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80",
     description: "Close to Menoufia University complex, very peaceful street.", desc_ar: "بالقرب من مجمع كليات جامعة المنوفية، شارع هادئ جداً.",
     amenities: ["Wi-Fi", "Kitchen"],
     owner: "Ramy Sabry", phone: "01244556677"
@@ -313,7 +313,7 @@ let baseProperties = [
     location: "Sohag", location_ar: "سوهاج",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=400",
+    image: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?auto=format&fit=crop&w=800&q=80",
     description: "A comfortable shared room in the new Sohag city, near the University.", desc_ar: "غرفة مشتركة مريحة في مدينة سوهاج الجديدة بجوار الجامعة.",
     amenities: ["Washing Machine"],
     owner: "Hassan Shaker", phone: "01055667788"
@@ -326,7 +326,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "shared",
     rooms: 1,
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400",
+    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
     description: "Recently painted cozy single room with private bathroom access.", desc_ar: "غرفة مفردة مريحة مطلية حديثاً مع حمام خاص.",
     amenities: ["Wi-Fi", "Air Conditioning", "Private Bathroom"],
     owner: "Salma Yasser", phone: "01166778899"
@@ -338,7 +338,7 @@ let baseProperties = [
     location: "Fayoum", location_ar: "الفيوم",
     type: "apartment",
     rooms: 3,
-    image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400",
+    image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80",
     description: "Perfect for a group of students, 3 bedrooms in a lively neighborhood.", desc_ar: "مثالية لمجموعة من الطلاب، 3 غرف في حي حيوي.",
     amenities: ["Wi-Fi", "Kitchen", "Air Conditioning", "Balcony"],
     owner: "Amr Diab", phone: "01277889900"

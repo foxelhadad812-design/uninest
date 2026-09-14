@@ -156,7 +156,7 @@ window.onload = async function() {
   content.innerHTML =
     "<div class='details-layout'>" +
     "<div>" +
-    "<img src='" + mainImg + "' alt='" + tTitle + "' class='details-img' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\"/>" +
+    "<img src='" + mainImg + "' alt='" + tTitle + "' class='details-img' referrerpolicy='no-referrer' crossorigin='anonymous' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\"/>" +
     "<h1 class='details-title'>" + tTitle + "</h1>" +
     "<div class='details-price' style='display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;'>" +
     "<span>" + property.price + " " + window.t("egpMonth") + "</span>" +

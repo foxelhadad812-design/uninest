@@ -56,7 +56,7 @@ async function displayFeaturedListings() {
       var viewText = (window.t ? window.t("btnView") : null) || "View Details";
 
       html += "<div class='card' style='position:relative;'>";
-      html += "<img src='" + imgUrl + "' alt='" + tTitle + "' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\" style='width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;' />";
+      html += "<img src='" + imgUrl + "' alt='" + tTitle + "' referrerpolicy='no-referrer' crossorigin='anonymous' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\" style='width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;' />";
       html += "<div class='card-body'>";
       html += "<h3 style='font-size:16px; margin-bottom:4px; font-weight:700;'>" + tTitle + "</h3>";
       html += "<div style='font-size:13px; color:#f39c12; margin-bottom:10px;'><i class='fa-solid fa-star'></i> " + ratingScore + " <span style='color:var(--text-light); font-size:12px;'>(" + ratingCount + " " + revText + ")</span></div>";
@@ -74,8 +74,8 @@ async function displayFeaturedListings() {
     container.innerHTML = html;
   } else {
     container.innerHTML =
-      "<div class='card' style='position:relative;'><img src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400' style='width:100%;height:200px;object-fit:cover;border-radius:12px 12px 0 0;'><div class='card-body'><h3 style='font-size:16px;font-weight:700;'>Apartment near Fayoum University</h3><div style='font-size:18px;font-weight:700;color:var(--primary);'>3,500 EGP/mo</div><a href='details.html?id=1' class='btn btn-primary' style='width:100%;text-align:center;margin-top:10px;display:inline-block;'>View Details</a></div></div>" +
-      "<div class='card' style='position:relative;'><img src='https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400' style='width:100%;height:200px;object-fit:cover;border-radius:12px 12px 0 0;'><div class='card-body'><h3 style='font-size:16px;font-weight:700;'>Single Room near EELU Fayoum</h3><div style='font-size:18px;font-weight:700;color:var(--primary);'>3,800 EGP/mo</div><a href='details.html?id=2' class='btn btn-primary' style='width:100%;text-align:center;margin-top:10px;display:inline-block;'>View Details</a></div></div>";
+      "<div class='card' style='position:relative;'><img src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80' referrerpolicy='no-referrer' crossorigin='anonymous' style='width:100%;height:200px;object-fit:cover;border-radius:12px 12px 0 0;'><div class='card-body'><h3 style='font-size:16px;font-weight:700;'>Apartment near Fayoum University</h3><div style='font-size:18px;font-weight:700;color:var(--primary);'>3,500 EGP/mo</div><a href='details.html?id=1' class='btn btn-primary' style='width:100%;text-align:center;margin-top:10px;display:inline-block;'>View Details</a></div></div>" +
+      "<div class='card' style='position:relative;'><img src='https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80' referrerpolicy='no-referrer' crossorigin='anonymous' style='width:100%;height:200px;object-fit:cover;border-radius:12px 12px 0 0;'><div class='card-body'><h3 style='font-size:16px;font-weight:700;'>Single Room near EELU Fayoum</h3><div style='font-size:18px;font-weight:700;color:var(--primary);'>3,800 EGP/mo</div><a href='details.html?id=2' class='btn btn-primary' style='width:100%;text-align:center;margin-top:10px;display:inline-block;'>View Details</a></div></div>";
   }
 }
 }

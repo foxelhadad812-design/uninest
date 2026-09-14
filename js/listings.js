@@ -172,7 +172,7 @@ function renderListings(data) {
     html += "</div>";
     html += "<button onclick='toggleFavorite(" + JSON.stringify(String(p.id)) + ")' title='Add to Favorites' style='position:absolute; top:12px; left:12px; background:white; border:none; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.2); z-index:10; font-size:16px; transition: transform 0.2s;' onmouseover='this.style.transform=\"scale(1.1)\"' onmouseout='this.style.transform=\"scale(1)\"'>" + heartIcon + "</button>";
     var fallbackImg = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop&q=80";
-    html += "<img src='" + (p.image || fallbackImg) + "' alt='" + tTitle + "' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\" style='width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;'/>";
+    html += "<img src='" + (p.image || fallbackImg) + "' alt='" + tTitle + "' referrerpolicy='no-referrer' crossorigin='anonymous' onerror=\"this.onerror=null;this.src='" + fallbackImg + "';\" style='width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;'/>";
     html += "<div class='card-body'>";
     html += "<h3 style='font-size:16px;margin-bottom:4px; font-weight:700;'>" + tTitle + "</h3>";
     html += "<div style='font-size:13px; color:#f39c12; margin-bottom:10px;'><i class='fa-solid fa-star'></i> " + ratingScore + " <span style='color:var(--text-light); font-size:12px;'>(" + ratingCount + " " + window.t("reviewsLbl") + ")</span></div>";

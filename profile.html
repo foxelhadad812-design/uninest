@@ -336,7 +336,7 @@
            var p = myListings[i];
            myListingsHTML +=
              "<div class='mini-card'>" +
-               "<img src='" + (p.image || "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=200") + "' alt='" + p.title + "'/>" +
+               "<img src='" + (p.image || "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80") + "' alt='" + p.title + "' referrerpolicy='no-referrer' crossorigin='anonymous' onerror=\"this.onerror=null;this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80';\"/>" +
                "<div class='mini-card-info'>" +
                  "<div class='mini-card-title'>" + p.title + "</div>" +
                  "<div class='mini-card-price'>" + p.price + " " + window.t('egpMonth') + "</div>" +
@@ -354,7 +354,7 @@
           var p = favoriteProps[i];
           favoritesHTML +=
             "<div class='mini-card'>" +
-              "<img src='" + p.image + "' alt='" + p.title + "'/>" +
+              "<img src='" + (p.image || "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=400&q=80") + "' alt='" + p.title + "' referrerpolicy='no-referrer' crossorigin='anonymous' onerror=\"this.onerror=null;this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80';\"/>" +
               "<div class='mini-card-info'>" +
                 "<div class='mini-card-title'>" + p.title + "</div>" +
                 "<div class='mini-card-price'>" + p.price + " " + window.t('egpMonth') + "</div>" +
