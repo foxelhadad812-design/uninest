@@ -209,8 +209,24 @@ async function fetchAndRenderListings() {
     listingsData = (result.items || []).map(window.UniNestApi.mapListing);
     renderListings(listingsData);
   } catch (err) {
-    console.error("Failed to load listings:", err);
-    setGridError();
+    console.warn("Failed to load listings from API, falling back to local dataset:", err);
+    var source = (typeof properties !== "undefined" ? properties : (typeof baseProperties !== "undefined" ? baseProperties : []));
+    var search = document.getElementById("searchInput") ? document.getElementById("searchInput").value.trim().toLowerCase() : "";
+    var maxPrice = document.getElementById("priceRange") ? parseInt(document.getElementById("priceRange").value, 10) : 20000;
+    var locFilter = document.getElementById("locationFilter") ? document.getElementById("locationFilter").value : "";
+
+    var checkedTypes = [];
+    var checkboxes = document.querySelectorAll(".checkbox-group input:checked");
+    for (var k = 0; k < checkboxes.length; k++) checkedTypes.push(checkboxes[k].value);
+
+    listingsData = source.filter(function(p) {
+      if (search && (p.title || "").toLowerCase().indexOf(search) === -1 && (p.location || "").toLowerCase().indexOf(search) === -1 && (p.description || "").toLowerCase().indexOf(search) === -1) return false;
+      if (maxPrice && p.price > maxPrice) return false;
+      if (locFilter && p.location !== locFilter) return false;
+      if (checkedTypes.length > 0 && checkedTypes.indexOf(p.type) === -1) return false;
+      return true;
+    });
+    renderListings(listingsData);
   } finally {
     isLoading = false;
   }

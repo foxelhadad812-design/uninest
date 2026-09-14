@@ -18,25 +18,19 @@ window.onload = async function() {
   try {
     if (window.UniNestApi) {
       property = await window.UniNestApi.getListing(id);
-    } else {
-      loadError = "API not available";
     }
   } catch (err) {
-    if (err.status === 404) {
-      loadError = "not_found";
-    } else {
-      loadError = "error";
+    console.warn("Failed to load listing from API, falling back to local dataset:", err);
+  }
+
+  if (!property) {
+    var source = (typeof properties !== "undefined" ? properties : (typeof baseProperties !== "undefined" ? baseProperties : []));
+    for (var j = 0; j < source.length; j++) {
+      if (String(source[j].id) === String(id)) {
+        property = source[j];
+        break;
+      }
     }
-  }
-
-  if (loadError === "not_found") {
-    content.innerHTML = "<div class='not-found'>😕 Property not found.</div>";
-    return;
-  }
-
-  if (loadError) {
-    content.innerHTML = "<div class='not-found'>⚠️ Unable to load property details. Please try again later.</div>";
-    return;
   }
 
   if (!property) {

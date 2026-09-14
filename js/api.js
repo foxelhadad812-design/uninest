@@ -8,8 +8,14 @@
   function apiBase() {
     var custom = localStorage.getItem(BASE_KEY);
     if (custom) return custom;
-    if (typeof window !== "undefined" && window.location && window.location.origin && window.location.origin.indexOf("http") === 0) {
-      return window.location.origin;
+    if (typeof window !== "undefined" && window.location && window.location.origin) {
+      if (window.location.port === "5157") {
+        return window.location.origin;
+      }
+      var host = window.location.hostname;
+      if (host && host !== "localhost" && host !== "127.0.0.1" && host !== "" && !host.endsWith(".github.io")) {
+        return window.location.origin;
+      }
     }
     return "http://localhost:5157";
   }
