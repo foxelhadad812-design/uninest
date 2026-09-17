@@ -17,7 +17,7 @@
         return window.location.origin;
       }
     }
-    return "http://localhost:5157";
+    return "http://uninest-api.runasp.net";
   }
 
   function getAccessToken() {
