@@ -112,37 +112,20 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        if (builder.Environment.IsDevelopment())
+        var origins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+        if (origins != null && origins.Length > 0)
         {
-            policy
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .WithOrigins(
-                    "http://localhost:3000",   // React / Next.js dev
-                    "http://localhost:5173",   // Vite dev
-                    "http://localhost:4200",   // Angular dev
-                    "https://localhost:7001")  // HTTPS local
-                .AllowCredentials();
+            policy.WithOrigins(origins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         }
         else
         {
-            // Production: read from configuration.
-            // Set Cors__AllowedOrigins__0=https://app.uninest.com in env vars, or
-            // "Cors": { "AllowedOrigins": ["https://app.uninest.com"] } in appsettings.
-            var allowedOrigins = builder.Configuration
-                .GetSection("Cors:AllowedOrigins")
-                .Get<string[]>() ?? [];
-
-            if (allowedOrigins.Length == 0)
-                throw new InvalidOperationException(
-                    "Cors:AllowedOrigins must be configured in production. " +
-                    "Set at least one allowed origin.");
-
-            policy
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .WithOrigins(allowedOrigins)
-                .AllowCredentials();
+            policy.SetIsOriginAllowed(_ => true)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         }
     });
 });
