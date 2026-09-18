@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using UniNest.Domain;
 
@@ -19,11 +21,19 @@ public static class DatabaseSeeder
         {
             try
             {
-                await db.Database.EnsureCreatedAsync();
+                var dbCreator = db.Database.GetService<IRelationalDatabaseCreator>();
+                if (dbCreator != null && !await dbCreator.HasTablesAsync())
+                {
+                    await dbCreator.CreateTablesAsync();
+                }
+                else
+                {
+                    await db.Database.EnsureCreatedAsync();
+                }
             }
             catch
             {
-                // Proceed safely
+                await db.Database.EnsureCreatedAsync();
             }
         }
         var roles = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();

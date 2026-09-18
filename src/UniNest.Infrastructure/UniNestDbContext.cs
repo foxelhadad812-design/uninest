@@ -78,6 +78,19 @@ public sealed class UniNestDbContext(DbContextOptions<UniNestDbContext> options)
         }
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+
+        configurationBuilder
+            .Properties<DateTimeOffset>()
+            .HaveConversion<Microsoft.EntityFrameworkCore.Storage.ValueConversion.DateTimeOffsetToStringConverter>();
+
+        configurationBuilder
+            .Properties<DateTimeOffset?>()
+            .HaveConversion<Microsoft.EntityFrameworkCore.Storage.ValueConversion.DateTimeOffsetToStringConverter>();
+    }
+
     protected override void OnModelCreating(ModelBuilder b)
     {
         base.OnModelCreating(b);
@@ -404,14 +417,10 @@ public sealed class UniNestDbContext(DbContextOptions<UniNestDbContext> options)
         b.Entity<AuditLog>(e =>
         {
             e.HasKey(x => x.Id);
-            e.Property(x => x.Id).HasDefaultValueSql("NEWID()");
             e.Property(x => x.Action).HasMaxLength(100).IsRequired();
             e.Property(x => x.EntityType).HasMaxLength(100).IsRequired();
             e.Property(x => x.IpHash).HasMaxLength(64);
             e.Property(x => x.UserAgent).HasMaxLength(512);
-            e.Property(x => x.OldValues).HasColumnType("nvarchar(max)");
-            e.Property(x => x.NewValues).HasColumnType("nvarchar(max)");
-            e.Property(x => x.Metadata).HasColumnType("nvarchar(max)");
             e.HasIndex(x => new { x.EntityType, x.EntityId, x.OccurredAt });
             e.HasIndex(x => new { x.ActorUserId, x.OccurredAt });
 
