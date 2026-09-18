@@ -16,7 +16,15 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is required.");
-        services.AddDbContext<UniNestDbContext>(options => options.UseSqlServer(connectionString));
+
+        if (connectionString.Contains(".db") || (connectionString.Contains("Data Source=") && !connectionString.Contains("Server=")))
+        {
+            services.AddDbContext<UniNestDbContext>(options => options.UseSqlite(connectionString));
+        }
+        else
+        {
+            services.AddDbContext<UniNestDbContext>(options => options.UseSqlServer(connectionString));
+        }
 
         services.AddIdentityCore<AppUser>(options =>
         {

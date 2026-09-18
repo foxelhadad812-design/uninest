@@ -343,8 +343,18 @@ window.onload = async function() {
   await fetchLocationsMap();
   var params = new URLSearchParams(window.location.search);
   var search = params.get("search");
-  if (search) {
-    document.getElementById("searchInput").value = search;
+  var searchEl = document.getElementById("searchInput");
+  if (search && searchEl) {
+    searchEl.value = search;
+  }
+  if (searchEl) {
+    var _searchDebounceTimer = null;
+    searchEl.addEventListener("input", function() {
+      clearTimeout(_searchDebounceTimer);
+      _searchDebounceTimer = setTimeout(function() {
+        applyFilters();
+      }, 350);
+    });
   }
   fetchAndRenderListings();
 };

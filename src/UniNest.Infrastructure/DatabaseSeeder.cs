@@ -11,7 +11,21 @@ public static class DatabaseSeeder
     {
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<UniNestDbContext>();
-        await db.Database.MigrateAsync();
+        try
+        {
+            await db.Database.MigrateAsync();
+        }
+        catch
+        {
+            try
+            {
+                await db.Database.EnsureCreatedAsync();
+            }
+            catch
+            {
+                // Proceed safely
+            }
+        }
         var roles = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
         var users = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 

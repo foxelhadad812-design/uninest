@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using UniNest.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,31 +75,22 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer' [space] and then your valid JWT token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
+        Description = "Enter 'Bearer' [space] and then your valid JWT token in the text input below."
     });
 
-    options.AddSecurityRequirement((doc) =>
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        var scheme = new OpenApiSecurityScheme
         {
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "Enter 'Bearer' [space] and then your valid JWT token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
-        };
-        doc.Components ??= new OpenApiComponents();
-        doc.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-        doc.Components.SecuritySchemes["Bearer"] = scheme;
-
-        return new OpenApiSecurityRequirement
-        {
+            new OpenApiSecurityScheme
             {
-                new OpenApiSecuritySchemeReference("Bearer", doc),
-                new List<string>()
-            }
-        };
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 

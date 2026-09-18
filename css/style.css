@@ -597,3 +597,23 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   justify-content: center;
 }
+
+/* Skeleton Loading Animation */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.skeleton-box {
+  background: linear-gradient(90deg, #f1f5f9 0px, #e2e8f0 40px, #f1f5f9 80px);
+  background-size: 200px 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 6px;
+}

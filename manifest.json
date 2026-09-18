@@ -1,0 +1,22 @@
+{
+  "short_name": "UniNest",
+  "name": "UniNest – Student Housing Portal",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=192&auto=format&fit=crop&q=80",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=512&auto=format&fit=crop&q=80",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#0d1b2a",
+  "theme_color": "#2196f3",
+  "display": "standalone",
+  "orientation": "portrait",
+  "description": "Find and book trusted student housing near your university in Egypt."
+}
