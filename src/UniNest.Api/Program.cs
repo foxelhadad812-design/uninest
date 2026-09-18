@@ -58,6 +58,7 @@ builder.Services.AddRateLimiter(options =>
 });
 
 builder.Services.AddHealthChecks().AddDbContextCheck<UniNestDbContext>("database");
+builder.Services.AddSignalR();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -157,6 +158,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHealthChecks("/health");
+app.MapHub<UniNest.Api.Hubs.ChatHub>("/hubs/chat");
 app.MapControllers();
 
 await DatabaseSeeder.SeedAsync(app.Services);

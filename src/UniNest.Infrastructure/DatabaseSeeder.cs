@@ -49,6 +49,7 @@ public static class DatabaseSeeder
         var amenities = await SeedAmenitiesAsync(db);
         await SeedUniversitiesAsync(db, locations);
         await SeedDemoUsersAndListingsAsync(db, users, locations, amenities);
+        await SeedDemoReviewsAsync(db);
     }
 
     private static async Task<Dictionary<string, Location>> SeedLocationsAsync(UniNestDbContext db)
@@ -282,5 +283,24 @@ public static class DatabaseSeeder
 
         await users.AddToRoleAsync(user, role);
         return user;
+    }
+
+    private static async Task SeedDemoReviewsAsync(UniNestDbContext db)
+    {
+        if (await db.Reviews.AnyAsync()) return;
+
+        var listings = await db.Listings.Where(l => l.Status == ListingStatus.Published).Take(5).ToListAsync();
+        var student = await db.Users.FirstOrDefaultAsync(u => u.Email == "student@uninest.local");
+        if (student == null || listings.Count == 0) return;
+
+        var reviews = new[]
+        {
+            new Review { Id = Guid.NewGuid(), ListingId = listings[0].Id, AuthorUserId = student.Id, Rating = 5, Status = ReviewStatus.Published, Body = "مكان ممتاز وهادئ جداً، والنت سريع للغاية. أنصح بيه بشدة لكل الطلاب.", CreatedAt = DateTimeOffset.UtcNow.AddDays(-10), UpdatedAt = DateTimeOffset.UtcNow.AddDays(-10) },
+            new Review { Id = Guid.NewGuid(), ListingId = listings[0].Id, AuthorUserId = student.Id, Rating = 4, Status = ReviewStatus.Published, Body = "المالك محترم جداً ومتعاون، والغرفة كانت نظيفة ومطابقة للصور.", CreatedAt = DateTimeOffset.UtcNow.AddDays(-5), UpdatedAt = DateTimeOffset.UtcNow.AddDays(-5) },
+            new Review { Id = Guid.NewGuid(), ListingId = listings[1].Id, AuthorUserId = student.Id, Rating = 5, Status = ReviewStatus.Published, Body = "قريبة من الجامعة جداً، والمنطقة أمان والمحلات قريبة.", CreatedAt = DateTimeOffset.UtcNow.AddDays(-3), UpdatedAt = DateTimeOffset.UtcNow.AddDays(-3) }
+        };
+
+        db.Reviews.AddRange(reviews);
+        await db.SaveChangesAsync();
     }
 }
