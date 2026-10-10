@@ -19,11 +19,9 @@
 
 ---
 
-## 📸 Platform Highlights & Screenshots
+## 🌟 Key Features
 
-![UniNest Platform Banner](https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&auto=format&fit=crop&q=80)
-
-### 🌟 Key Features
+> The live application is linked above. Repository screenshots will be added when actual UI captures are committed; this README intentionally avoids using stock photography as a product screenshot.
 - **🔍 Debounced Instant Live Search & Filtering:** Filter student apartments by city (Fayoum, Cairo, Giza, Alexandria, Mansoura), max rent, room type (Apartment, Single, Shared), and gender policy.
 - **🗺️ Interactive Leaflet.js Maps:** Free, open-source location map with property pins, university proximity indicators, and custom popup previews.
 - **⭐ Student Reviews & Star Ratings System:** Real-time rating breakdowns, student feedback, and review submission.
@@ -82,10 +80,37 @@ flowchart TD
 
 ## 🔐 Security & Best Practices
 
-- **Zero Hardcoded Secrets:** Connection strings, JWT secret keys, and passwords are read dynamically from Environment Variables or User Secrets.
+- **Configuration hygiene:** Supply JWT signing keys and database credentials through environment variables or User Secrets for local development. Never commit production credentials; rotate any credential that may have been committed previously.
 - **Secure Password Hashing:** Uses ASP.NET Core Identity's default PBKDF2 with SHA-256 and automatic salt generation.
 - **Database Provider-Neutral:** Custom EF Core `ConfigureConventions` ensures `DateTimeOffset` and Guid types format seamlessly on both SQL Server and SQLite.
 - **Strict CORS & Rate Limiting:** API requests are rate-limited to 120 req/min per IP, with CORS restricted strictly to GitHub Pages frontend origin.
+
+---
+
+## 🧑‍💻 Local Development
+
+### Prerequisites
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- Git
+- A configured database provider supported by the current backend configuration
+
+### Run the API
+```bash
+git clone https://github.com/foxelhadad812-design/uninest.git
+cd uninest
+dotnet restore UniNest.slnx
+dotnet build UniNest.slnx
+dotnet run --project src/UniNest.Api
+```
+
+The API prints its local address at startup. Configure database access, JWT signing configuration, and allowed frontend origins for your environment before testing authenticated features. Do not copy production credentials into tracked configuration files.
+
+### Run Tests
+```bash
+dotnet test UniNest.slnx
+```
+
+For detailed folder explanations and design notes, see [the technical guide](docs/UNINEST_PROJECT_STRUCTURE_AND_TECHNICAL_GUIDE.md).
 
 ---
 
