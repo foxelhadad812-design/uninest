@@ -19,15 +19,21 @@
 
 ---
 
+## Quick Navigation
+
+[Overview](#-uninest---full-stack-student-housing-platform) · [Live Demo](#-live-demo-links) · [Features](#-key-features) · [Architecture](#️-system-architecture--tech-stack) · [Local Setup](#-local-development) · [Tests](#run-tests) · [Project Structure](#-repository-structure)
+
+
+---
+
 ## 🌟 Key Features
 
-> The live application is linked above. Repository screenshots will be added when actual UI captures are committed; this README intentionally avoids using stock photography as a product screenshot.
 - **🔍 Debounced Instant Live Search & Filtering:** Filter student apartments by city (Fayoum, Cairo, Giza, Alexandria, Mansoura), max rent, room type (Apartment, Single, Shared), and gender policy.
 - **🗺️ Interactive Leaflet.js Maps:** Free, open-source location map with property pins, university proximity indicators, and custom popup previews.
 - **⭐ Student Reviews & Star Ratings System:** Real-time rating breakdowns, student feedback, and review submission.
 - **⚖️ Side-by-Side Property Comparison:** Compare up to 3 listings simultaneously (Price, Rooms, Beds, Gender Policy, Amenities).
 - **📱 PWA & Mobile Installable:** `manifest.json` integrated with app icons, offline caching, and native mobile shortcuts.
-- **🔐 JWT Authentication & Security:** Identity password hashing, JWT bearer tokens, role-based authorization (`Student`, `Owner`, `Admin`), and XSS/CORS protection.
+- **🔐 JWT Authentication:** Identity password hashing, JWT bearer tokens, and role-based authorization (`Student`, `Owner`, `Admin`).
 - **💬 Real-Time SignalR Chat:** Instant student-landlord messaging over open housing inquiries (`ws://uninest-api.runasp.net/hubs/chat`).
 - **🏠 Owner Portal Dashboard:** Dedicated landlord dashboard to manage active properties and submit new housing listings.
 
@@ -83,7 +89,7 @@ flowchart TD
 - **Configuration hygiene:** Supply JWT signing keys and database credentials through environment variables or User Secrets for local development. Never commit production credentials; rotate any credential that may have been committed previously.
 - **Secure Password Hashing:** Uses ASP.NET Core Identity's default PBKDF2 with SHA-256 and automatic salt generation.
 - **Database Provider-Neutral:** Custom EF Core `ConfigureConventions` ensures `DateTimeOffset` and Guid types format seamlessly on both SQL Server and SQLite.
-- **Strict CORS & Rate Limiting:** API requests are rate-limited to 120 req/min per IP, with CORS restricted strictly to GitHub Pages frontend origin.
+- **Rate Limiting & CORS Configuration:** API requests are rate-limited to 120 requests per minute per IP. Set `Cors:AllowedOrigins` to an explicit allowlist for the target environment and verify it before deployment.
 
 ---
 
