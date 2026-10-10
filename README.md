@@ -26,6 +26,16 @@
 
 ---
 
+## Project Documentation
+
+- [Technical Guide](docs/UNINEST_PROJECT_STRUCTURE_AND_TECHNICAL_GUIDE.md) — project structure, architecture, and technical implementation.
+- [Project Status](PROJECT_STATUS.md) — documented project status and verification notes.
+- [Local Development](#-local-development) — setup and configuration guidance.
+
+The project is presented as a completed build; these references explain its implementation and current repository documentation.
+
+---
+
 ## 🌟 Key Features
 
 - **🔍 Debounced Instant Live Search & Filtering:** Filter student apartments by city (Fayoum, Cairo, Giza, Alexandria, Mansoura), max rent, room type (Apartment, Single, Shared), and gender policy.
