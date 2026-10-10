@@ -11,7 +11,7 @@
 
 ## Complete Feature Matrix
 
-### Backend & API (ASP.NET Core, .NET 10)
+### Backend & API (ASP.NET Core, .NET 9)
 
 | Layer | Contents |
 |-------|----------|
