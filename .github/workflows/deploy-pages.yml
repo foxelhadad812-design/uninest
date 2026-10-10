@@ -24,13 +24,25 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Prepare Static Frontend
+        run: |
+          set -euo pipefail
+          mkdir -p _site/css _site/js
+          cp ./*.html _site/
+          cp manifest.json _site/
+          cp -R css/. _site/css/
+          cp -R js/. _site/js/
+          test -s _site/index.html
+          test -s _site/css/style.css
+          echo "Prepared static frontend files for GitHub Pages."
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
